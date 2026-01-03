@@ -1,7 +1,7 @@
 package com.example.StudentRegistrationSystem;
 
-import com.securitygateway.nextstep.model.LostItem;
-import com.securitygateway.nextstep.service.LostItemService;
+import com.example.StudentRegistrationSystem.entity.LostItem;
+import com.example.StudentRegistrationSystem.service.LostItemService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,5 +30,8 @@ class LostItemServiceTest {
         assertEquals("Library Building", savedItem.getLocationFound());
     }
 
-
+    @Test
+    void testGetAllLostItems() {
+        assertNotNull(lostItemService.getAllLostItems());
+    }
 }
