@@ -1,3 +1,7 @@
+CREATE DATABASE NextStep; db name
+
+
+
 git checkout dev- ( use your branch name )
 
 git pull origin main
