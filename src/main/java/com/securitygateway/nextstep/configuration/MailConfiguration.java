@@ -23,6 +23,7 @@ public class MailConfiguration {
         mailSender.setUsername("sudeesharavisara2@gmail.com"); //  change with your mail
         mailSender.setPassword("vxlyrnzjfxznptmb"); // change password
 
+
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
         props.put("mail.smtp.auth", "true");
