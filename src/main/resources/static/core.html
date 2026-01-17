@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>NextStep | Core System</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/index.css"/>
+    <link rel="stylesheet" href="css/core.css"/>
+</head>
+<body>
+
+<header class="topbar">
+    <div class="wrap topbar-row">
+        <div class="brand" onclick="location.href='index.html'">
+            <div class="brand-logo">N</div>
+            <div class="brand-title">NEXTSTEP</div>
+        </div>
+
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="core.html">Core System</a>
+            <a href="stalls.html">Stalls</a>
+            <a href="model-papers.html">Model Papers</a>
+            <a href="shuttle.html">Shuttle</a>
+            <a href="lost-found.html">Lost & Found</a>
+            <a href="club-events.html">Club Events</a>
+            <a href="study-room.html">Study Room</a>
+        </nav>
+
+        <div class="nav-right">
+            <div class="user-mini" id="userMini" style="display:none;">
+                <img class="avatar" id="avatar" alt="avatar"
+                     src="https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png"/>
+                <div>
+                    <div class="user-name" id="userNameTop">User</div>
+                    <div class="user-role" id="userRoleTop">ROLE</div>
+                </div>
+            </div>
+            <button class="btn" id="logoutBtn" type="button" style="display:none;">Logout</button>
+        </div>
+    </div>
+</header>
+
+<main class="page">
+    <div class="wrap">
+        <h1 class="title">Core System</h1>
+        <p class="subtitle">Manage users, database health, permissions, and system logs.</p>
+
+        <div class="core-grid">
+            <!-- User Management -->
+            <section class="card">
+                <div class="card-head">
+                    <div class="card-title">User Management</div>
+                    <div>👥</div>
+                </div>
+                <div class="card-body">
+                    <div class="core-item">
+                        <span>Student Profiles</span>
+                        <button class="chip-btn" type="button" onclick="location.href='dashboard.html'">Open</button>
+                    </div>
+                    <div class="core-item">
+                        <span>Admins Accounts</span>
+                        <button class="chip-btn" type="button">Access</button>
+                    </div>
+                    <div class="note">Later connect user/admin APIs.</div>
+                </div>
+            </section>
+
+            <!-- Database Status -->
+            <section class="card">
+                <div class="card-head">
+                    <div class="card-title">Database Status</div>
+                    <div>🟢</div>
+                </div>
+                <div class="card-body">
+                    <div class="db-status">
+                        <div class="dot-ok"></div>
+                        <div>
+                            <div class="db-big" id="dbText">Connected</div>
+                            <div class="muted small" id="dbSub">Last Sync: 10 seconds ago</div>
+                        </div>
+                    </div>
+                    <div class="note">This is UI now. Later connect health endpoint.</div>
+                </div>
+            </section>
+
+            <!-- System Logs -->
+            <section class="card">
+                <div class="card-head">
+                    <div class="card-title">System Logs</div>
+                    <div>📄</div>
+                </div>
+                <div class="card-body">
+                    <div class="log">
+                        <div class="log-title">INFO - 2024-11: Login successful</div>
+                        <div class="muted small">User session created.</div>
+                    </div>
+                    <div class="log">
+                        <div class="log-title">INFO - 2024-12: OTP verified</div>
+                        <div class="muted small">Account activated.</div>
+                    </div>
+
+                    <div class="note">Later you can fetch logs from backend.</div>
+                </div>
+            </section>
+
+            <!-- Module & Permissions (wide) -->
+            <section class="card card-wide">
+                <div class="card-head">
+                    <div class="card-title">Module & Permissions</div>
+                    <div>⚙️</div>
+                </div>
+                <div class="card-body">
+                    <div class="perm">
+                        <div class="perm-row">
+                            <span>Dashboard</span>
+                            <span class="tag ok">Enabled</span>
+                        </div>
+                        <div class="perm-row">
+                            <span>Timetable</span>
+                            <span class="tag warn">Read Only</span>
+                        </div>
+                        <div class="perm-row">
+                            <span>Grades & Support</span>
+                            <span class="tag ok">Enabled</span>
+                        </div>
+                    </div>
+
+                    <div class="core-actions">
+                        <button class="chip-btn" type="button">Edit Roles</button>
+                        <button class="chip-btn" type="button">Open Settings</button>
+                    </div>
+
+                    <div class="note">Role-based access: later connect permission API.</div>
+                </div>
+            </section>
+        </div>
+
+        <footer class="footer">© <span id="year"></span> NextStep</footer>
+    </div>
+</main>
+
+<script type="module" src="js/core.js"></script>
+</body>
+</html>

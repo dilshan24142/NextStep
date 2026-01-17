@@ -1,0 +1,111 @@
+.page-head{margin:18px 0 16px}
+.title{margin:0;font-size:28px;font-weight:900}
+.subtitle{margin:6px 0 0;color:rgba(255,255,255,.85);font-weight:700}
+
+.mp-card .card-body{padding:14px}
+
+.filters{
+  display:grid;
+  grid-template-columns:repeat(4, 1fr);
+  gap:12px;
+  margin-bottom:14px;
+}
+
+.f label{
+  display:block;
+  font-weight:900;
+  font-size:12px;
+  margin-bottom:6px;
+  color:#0b1c2d;
+}
+
+.f input,.f select{
+  width:100%;
+  padding:12px 12px;
+  border-radius:12px;
+  border:1px solid rgba(15,23,42,.12);
+  outline:none;
+  font-family:Poppins, sans-serif;
+  font-weight:800;
+}
+
+.f input:focus,.f select:focus{
+  border-color:rgba(10,107,60,.45);
+  box-shadow:0 0 0 5px rgba(10,107,60,.14);
+}
+
+.papers-grid{
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:14px;
+}
+
+.paper{
+  background:#fff;
+  color:#0f172a;
+  border-radius:18px;
+  border:1px solid rgba(15,23,42,.10);
+  box-shadow:var(--shadow);
+  padding:14px;
+}
+
+.paper-top{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:10px;
+  padding-bottom:10px;
+  border-bottom:1px dashed rgba(15,23,42,.18);
+}
+
+.paper-name{font-weight:900}
+.paper-badge{
+  font-size:12px;
+  font-weight:900;
+  padding:7px 10px;
+  border-radius:999px;
+  background:rgba(10,107,60,.12);
+  color:#0a6b3c;
+  white-space:nowrap;
+}
+
+.paper-meta{
+  margin-top:10px;
+  display:grid;
+  gap:6px;
+  font-weight:800;
+  color:#334155;
+}
+.paper-meta span{color:#64748b;font-weight:800}
+
+.paper-actions{
+  margin-top:12px;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.btn-mini{
+  border:none;
+  padding:10px 12px;
+  border-radius:12px;
+  font-weight:900;
+  cursor:pointer;
+  background:rgba(10,107,60,.12);
+  color:#0a6b3c;
+}
+.btn-mini:hover{transform:translateY(-1px)}
+.btn-mini.dark{
+  background:#0b1c2d;
+  color:#fff;
+}
+
+/* responsive */
+@media (max-width:1000px){
+  .filters{grid-template-columns:repeat(2,1fr)}
+  .papers-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:680px){
+  .filters{grid-template-columns:1fr}
+  .papers-grid{grid-template-columns:1fr}
+}
