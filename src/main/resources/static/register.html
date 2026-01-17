@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Account | NextStep</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<section class="auth-page">
+    <div class="auth-card">
+        <h2 class="auth-title">CREATE ACCOUNT</h2>
+
+        <div id="msg" class="msg"></div>
+
+        <form id="registerForm">
+            <div class="field">
+                <label>First Name</label>
+                <input id="firstName" type="text" placeholder="John" required />
+            </div>
+
+            <div class="field">
+                <label>Last Name</label>
+                <input id="lastName" type="text" placeholder="Doe" required />
+            </div>
+
+            <div class="field">
+                <label>Email Address</label>
+                <input id="email" type="email" placeholder="example@gmail.com" required />
+            </div>
+
+            <!-- ✅ IMPORTANT: backend regex needs +94XXXXXXXXXX -->
+            <div class="field">
+                <label>Phone Number (+94XXXXXXXXXX)</label>
+                <input id="phoneNumber" type="text" placeholder="+94771234567" />
+            </div>
+
+            <div class="field">
+                <label>Gender</label>
+                <select id="gender">
+                    <option value="">Select</option>
+                    <option value="MALE">MALE</option>
+                    <option value="FEMALE">FEMALE</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label>Role</label>
+                <select id="role">
+                    <option value="">Select</option>
+                    <option value="USER">USER</option>
+                    <option value="ADMIN">ADMIN</option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label>Password</label>
+                <input id="password" type="password" placeholder="Min 8 chars (1 upper, 1 lower, 1 number)" required />
+            </div>
+
+            <button class="btn-auth" type="submit">SIGN UP</button>
+
+            <div class="auth-small">
+                Already have an account?
+                <a href="login.html">Login</a>
+            </div>
+        </form>
+
+    </div>
+</section>
+
+<script type="module" src="js/register.js"></script>
+</body>
+</html>

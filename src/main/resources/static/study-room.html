@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>NextStep | Study Room Booking</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/index.css" />
+    <link rel="stylesheet" href="css/study-room.css" />
+</head>
+<body>
+
+<header class="topbar">
+    <div class="wrap topbar-row">
+        <div class="brand" onclick="location.href='index.html'">
+            <div class="brand-logo">N</div>
+            <div class="brand-title">NEXTSTEP</div>
+        </div>
+
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="core.html">Core System</a>
+            <a href="stalls.html">Stalls</a>
+            <a href="model-papers.html">Model Papers</a>
+            <a href="shuttle.html">Shuttle</a>
+            <a href="lost-found.html">Lost & Found</a>
+            <a href="club-events.html">Club Events</a>
+            <a class="active" href="study-room.html">Study Room</a>
+        </nav>
+
+        <div class="nav-right">
+            <div class="user-mini" id="userMini" style="display:none;">
+                <img class="avatar" id="avatar" alt="avatar"
+                     src="https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png"/>
+                <div>
+                    <div class="user-name" id="userNameTop">User</div>
+                    <div class="user-role" id="userRoleTop">ROLE</div>
+                </div>
+            </div>
+
+            <button class="btn btn-dark" id="logoutBtn" type="button" style="display:none;">Logout</button>
+        </div>
+    </div>
+</header>
+
+<main class="page">
+    <div class="wrap">
+
+        <h1 class="welcome">Study Room Booking</h1>
+
+        <section class="card">
+            <div class="card-head">
+                <div class="card-title">Book a Study Room</div>
+            </div>
+
+            <div class="card-body">
+                <form id="bookingForm" class="booking-form">
+
+                    <div class="field">
+                        <label>Room</label>
+                        <select id="room" required>
+                            <option value="">Select Room</option>
+                            <option>Room A</option>
+                            <option>Room B</option>
+                            <option>Room C</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label>Date</label>
+                        <input type="date" id="date" required />
+                    </div>
+
+                    <div class="field">
+                        <label>Time Slot</label>
+                        <select id="time" required>
+                            <option value="">Select Time</option>
+                            <option>08:00 - 10:00</option>
+                            <option>10:00 - 12:00</option>
+                            <option>13:00 - 15:00</option>
+                            <option>15:00 - 17:00</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-dark">Book Room</button>
+                </form>
+
+                <p id="msg" class="msg"></p>
+            </div>
+        </section>
+
+        <section class="card">
+            <div class="card-head">
+                <div class="card-title">My Bookings</div>
+            </div>
+            <div class="card-body">
+                <ul id="bookingList" class="list"></ul>
+            </div>
+        </section>
+
+    </div>
+</main>
+
+<script type="module" src="js/study-room.js"></script>
+</body>
+</html>

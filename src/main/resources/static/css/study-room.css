@@ -1,0 +1,40 @@
+.booking-form{
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap:16px;
+  margin-bottom:16px;
+}
+
+.field{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.field label{
+  font-weight:800;
+  font-size:13px;
+  color:#0b1c2d;
+}
+
+.field input,
+.field select{
+  padding:10px 12px;
+  border-radius:10px;
+  border:1px solid #cbd5e1;
+  font-family:Poppins, sans-serif;
+}
+
+.msg{
+  margin-top:12px;
+  font-weight:800;
+}
+
+.msg.success{ color:#0a6b3c; }
+.msg.error{ color:#b91c1c; }
+
+@media(max-width:700px){
+  .booking-form{
+    grid-template-columns:1fr;
+  }
+}

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>NextStep | Shuttle Service</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/index.css"/>
+    <link rel="stylesheet" href="css/shuttle.css"/>
+</head>
+<body>
+
+<header class="topbar">
+    <div class="wrap topbar-row">
+        <div class="brand" onclick="location.href='index.html'">
+            <div class="brand-logo">N</div>
+            <div class="brand-title">NEXTSTEP</div>
+        </div>
+
+        <nav class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="core.html">Core System</a>
+            <a href="stalls.html">Stalls</a>
+            <a href="model-papers.html">Model Papers</a>
+            <a class="active" href="shuttle.html">Shuttle</a>
+            <a href="lost-found.html">Lost & Found</a>
+            <a href="club-events.html">Club Events</a>
+            <a href="study-room.html">Study Room</a>
+        </nav>
+
+        <div class="nav-right">
+            <div class="user-mini" id="userMini" style="display:none;">
+                <img class="avatar" id="avatar" alt="avatar"
+                     src="https://cdn.pixabay.com/photo/2016/08/08/09/17/avatar-1577909_960_720.png"/>
+                <div>
+                    <div class="user-name" id="userNameTop">User</div>
+                    <div class="user-role" id="userRoleTop">ROLE</div>
+                </div>
+            </div>
+
+            <button class="btn btn-dark" id="logoutBtn" type="button" style="display:none;">Logout</button>
+        </div>
+    </div>
+</header>
+
+<main class="page">
+    <div class="wrap">
+
+        <div class="page-head">
+            <h1 class="title">Shuttle Service</h1>
+            <p class="subtitle">Routes, timings, and live status (later connect backend).</p>
+        </div>
+
+        <section class="card sh-card">
+            <div class="card-head">
+                <div class="card-title">Route Finder</div>
+                <div class="mini-icon">🚌</div>
+            </div>
+
+            <div class="card-body">
+                <div class="filters">
+                    <div class="f">
+                        <label>From</label>
+                        <select id="fromStop">
+                            <option value="NSBM">NSBM</option>
+                            <option value="Maharagama">Maharagama</option>
+                            <option value="Nugegoda">Nugegoda</option>
+                            <option value="Galle">Galle</option>
+                            <option value="Kottawa">Kottawa</option>
+                        </select>
+                    </div>
+
+                    <div class="f">
+                        <label>To</label>
+                        <select id="toStop">
+                            <option value="NSBM">NSBM</option>
+                            <option value="Maharagama">Maharagama</option>
+                            <option value="Nugegoda">Nugegoda</option>
+                            <option value="Galle">Galle</option>
+                            <option value="Kottawa">Kottawa</option>
+                        </select>
+                    </div>
+
+                    <div class="f">
+                        <label>Day</label>
+                        <select id="day">
+                            <option value="Weekday">Weekday</option>
+                            <option value="Weekend">Weekend</option>
+                        </select>
+                    </div>
+
+                    <div class="f">
+                        <label>&nbsp;</label>
+                        <button class="btn-mini dark" id="searchBtn" type="button">Search</button>
+                    </div>
+                </div>
+
+                <div class="grid">
+                    <div class="panel">
+                        <div class="panel-top">
+                            <div class="panel-title">Today’s Timetable</div>
+                            <div class="pill2" id="pillDay">Weekday</div>
+                        </div>
+
+                        <div class="table" id="timeTable">
+                            <!-- JS render -->
+                        </div>
+
+                        <div class="hint">
+                            Later connect backend: <b>/api/v1/shuttle/routes</b> & <b>/api/v1/shuttle/timetable</b>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-top">
+                            <div class="panel-title">Live Status</div>
+                            <div class="pill2">Demo</div>
+                        </div>
+
+                        <div class="status-box">
+                            <div class="status-row">
+                                <span class="k">Bus</span>
+                                <span class="v" id="busNo">NS-01</span>
+                            </div>
+                            <div class="status-row">
+                                <span class="k">Current Stop</span>
+                                <span class="v" id="currentStop">Maharagama</span>
+                            </div>
+                            <div class="status-row">
+                                <span class="k">ETA</span>
+                                <span class="v" id="eta">12 mins</span>
+                            </div>
+
+                            <div class="mapbox">
+                                <div class="map-placeholder">Map preview (later connect GPS API)</div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </div>
+</main>
+
+<script type="module" src="js/shuttle.js"></script>
+</body>
+</html>

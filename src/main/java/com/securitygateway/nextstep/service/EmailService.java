@@ -92,7 +92,7 @@ public class EmailService {
                 + "</html>";
         helper.setText(htmlContent, true);
 
-        ClassPathResource image = new ClassPathResource("static/security-removebg-preview.png");
+        ClassPathResource image = new ClassPathResource("static/images/security-removebg-preview.png");
         helper.addInline("policeOfficerImage", image);
 
         javaMailSender.send(message);
