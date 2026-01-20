@@ -14,7 +14,7 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // හැම API එකකටම ඉඩ දෙන්න
-                        .allowedOrigins("http://localhost:5173") // Frontend එක දුවන තැන
+                        .allowedOrigins("http://localhost:5175") // Frontend එක දුවන තැන
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // කරන්න පුළුවන් වැඩ
                         .allowedHeaders("*")
                         .allowCredentials(true);

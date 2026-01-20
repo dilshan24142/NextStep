@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -12,55 +11,64 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
+import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
+
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfiguration {
-
     private final AuthenticationEntryPoint authenticationEntryPoint;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final AuthenticationProvider authenticationProvider;
 
+    @Bean
+    MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspector) {
+        return new MvcRequestMatcher.Builder(introspector);
+    }
+
     private static final String[] SWAGGER_WHITELIST = {
             "/v3/api-docs/**",
             "/swagger-ui/**",
-            "/swagger-ui.html",
             "/swagger-resources/**",
-            "/webjars/**"
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui.html",
+            "/webjars/**",
+            "/file/*",
+            "/error/*",
+            "/"
     };
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
         http
-                // ✅ CORS enabled (uses your MvcConfiguration)
-                .cors(Customizer.withDefaults())
-
-                // ✅ JWT stateless API => disable CSRF
                 .csrf(AbstractHttpConfigurer::disable)
-
                 .authorizeHttpRequests(auth -> auth
-                        // ✅ Public auth endpoints
-                        .requestMatchers("/api/v1/auth/**").permitAll()
+                        // 1. Authentication Endpoints සඳහා අවසරය
+                        .requestMatchers(mvc.pattern("/api/v1/auth/**")).permitAll()
 
-                        // ✅ Swagger public
+                        // 2. අලුතින් එක් කළ Shuttle API සඳහා අවසරය
+                        .requestMatchers(mvc.pattern("/api/v1/shuttle/**")).permitAll()
+
+                        // 3. Swagger සහ API Docs සඳහා අවසරය
                         .requestMatchers(SWAGGER_WHITELIST).permitAll()
 
-                        // ✅ Everything else needs JWT
-                        .anyRequest().authenticated()
-                )
+                        // 4. Static Resources (HTML, CSS, JS) සඳහා අවසරය
+                        .requestMatchers(antMatcher("/*.html")).permitAll()
+                        .requestMatchers(antMatcher("/static/**")).permitAll()
+                        .requestMatchers(antMatcher("/css/**")).permitAll()
+                        .requestMatchers(antMatcher("/js/**")).permitAll()
 
-                // ✅ Unauthorized handler (401)
+                        // 5. අනෙකුත් සියලුම Request සඳහා Authentication අවශ්‍යයි
+                        .anyRequest().authenticated())
+
                 .exceptionHandling(e -> e.authenticationEntryPoint(authenticationEntryPoint))
-
-                // ✅ Stateless session
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
-                // ✅ JWT filter
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-
-                // ✅ Use your DaoAuthenticationProvider from ApplicationConfiguration
-                .authenticationProvider(authenticationProvider);
+                .authenticationProvider(authenticationProvider)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
