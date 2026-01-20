@@ -16,7 +16,6 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
-
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -29,7 +28,8 @@ public class SecurityConfiguration {
     MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspector) {
         return new MvcRequestMatcher.Builder(introspector);
     }
-    private static final String[] SWAGGER_WHITELIST= {
+
+    private static final String[] SWAGGER_WHITELIST = {
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/swagger-resources/**",
@@ -44,17 +44,32 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
-          http
-                  .csrf(AbstractHttpConfigurer::disable)
-                  .authorizeHttpRequests(auth -> auth
-                          .requestMatchers(mvc.pattern("/api/v1/auth/**")).permitAll()
-                          .requestMatchers(SWAGGER_WHITELIST).permitAll()
-                          .anyRequest().authenticated())
-                  .exceptionHandling(e -> e.authenticationEntryPoint(authenticationEntryPoint))
-                  .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                  .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                  .authenticationProvider(authenticationProvider);
+        http
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth -> auth
+                        // 1. Authentication Endpoints සඳහා අවසරය
+                        .requestMatchers(mvc.pattern("/api/v1/auth/**")).permitAll()
 
-          return http.build();
+                        // 2. අලුතින් එක් කළ Shuttle API සඳහා අවසරය
+                        .requestMatchers(mvc.pattern("/api/v1/shuttle/**")).permitAll()
+
+                        // 3. Swagger සහ API Docs සඳහා අවසරය
+                        .requestMatchers(SWAGGER_WHITELIST).permitAll()
+
+                        // 4. Static Resources (HTML, CSS, JS) සඳහා අවසරය
+                        .requestMatchers(antMatcher("/*.html")).permitAll()
+                        .requestMatchers(antMatcher("/static/**")).permitAll()
+                        .requestMatchers(antMatcher("/css/**")).permitAll()
+                        .requestMatchers(antMatcher("/js/**")).permitAll()
+
+                        // 5. අනෙකුත් සියලුම Request සඳහා Authentication අවශ්‍යයි
+                        .anyRequest().authenticated())
+
+                .exceptionHandling(e -> e.authenticationEntryPoint(authenticationEntryPoint))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authenticationProvider(authenticationProvider)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
     }
 }
