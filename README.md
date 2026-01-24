@@ -1,5 +1,5 @@
 CREATE DATABASE NextStep; db name
-
+  dev-revert {if u like to pull use dev-revert}
 git checkout dev- ( use your branch name )
 git pull origin main
 git status
