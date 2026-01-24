@@ -37,6 +37,21 @@ public class ShuttleController {
         return shuttleRepository.findAll();
     }
 
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateShuttle(@PathVariable Long id,
+                                           @ModelAttribute Shuttle shuttle,
+                                           @RequestParam(value = "files", required = false) List<MultipartFile> files) {
+        try {
+            shuttle.setId(id); // URL එකේ තියෙන ID එක Model එකට set කරන්න
+            shuttleService.saveShuttle(shuttle, files);
+            return ResponseEntity.ok(GeneralAPIResponse.builder()
+                    .message("Shuttle updated successfully")
+                    .build());
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
+        }
+    }
+
 
 
     @DeleteMapping("/delete/{id}")
