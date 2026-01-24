@@ -14,12 +14,12 @@ public class ShuttleImage {
     private Long id;
 
     @Lob
-    @Column(name = "image_data", columnDefinition = "LONGBLOB") // LONGBLOB is mandatory
+    @Column(name = "image_data", columnDefinition = "LONGBLOB") // LONGBLOB අනිවාර්යයි
     private byte[] imageData;
 
     private String fileType;
 
-    @ManyToOne(fetch = FetchType.LAZY) // Use LAZY to improve performance
+    @ManyToOne(fetch = FetchType.LAZY) // Performance වැඩි කිරීමට LAZY භාවිතා කරන්න
     @JoinColumn(name = "shuttle_id")
     @JsonIgnore
     private Shuttle shuttle;

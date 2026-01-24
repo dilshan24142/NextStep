@@ -24,6 +24,6 @@ public class Shuttle {
     @Column(length = 1000)
     private String additionalDetails;
 
-    @OneToMany(mappedBy = "shuttle", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER) // Use EAGER instead of LAZY
+    @OneToMany(mappedBy = "shuttle", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER) // LAZY වෙනුවට EAGER දාන්න
     private List<ShuttleImage> images = new ArrayList<>();
 }
