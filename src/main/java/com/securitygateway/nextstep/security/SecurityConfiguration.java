@@ -29,6 +29,8 @@ public class SecurityConfiguration {
         return new MvcRequestMatcher.Builder(introspector);
     }
 
+
+
     private static final String[] SWAGGER_WHITELIST = {
             "/v3/api-docs/**",
             "/swagger-ui/**",
@@ -55,6 +57,8 @@ public class SecurityConfiguration {
 
                         // 3. Swagger සහ API Docs සඳහා අවසරය
                         .requestMatchers(SWAGGER_WHITELIST).permitAll()
+
+                        .requestMatchers(mvc.pattern("/api/v1/shuttle/**")).permitAll()
 
                         // 4. Static Resources (HTML, CSS, JS) සඳහා අවසරය
                         .requestMatchers(antMatcher("/*.html")).permitAll()
