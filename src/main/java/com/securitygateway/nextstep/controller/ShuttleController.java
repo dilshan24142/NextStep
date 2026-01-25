@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:5173") // මෙය අනිවාර්යයෙන්ම තිබිය යුතුයි
+@CrossOrigin(origins = "http://localhost:5173") // This must be included
 @RestController
 @RequestMapping("/api/v1/shuttle")
 @RequiredArgsConstructor
@@ -42,7 +42,7 @@ public class ShuttleController {
                                            @ModelAttribute Shuttle shuttle,
                                            @RequestParam(value = "files", required = false) List<MultipartFile> files) {
         try {
-            shuttle.setId(id); // URL එකේ තියෙන ID එක Model එකට set කරන්න
+            shuttle.setId(id); // Set the ID from the URL into the model
             shuttleService.saveShuttle(shuttle, files);
             return ResponseEntity.ok(GeneralAPIResponse.builder()
                     .message("Shuttle updated successfully")

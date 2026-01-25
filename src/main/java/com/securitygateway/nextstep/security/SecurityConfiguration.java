@@ -49,24 +49,24 @@ public class SecurityConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        // 1. Authentication Endpoints සඳහා අවසරය
+                        // 1. Permission for Authentication Endpoints
                         .requestMatchers(mvc.pattern("/api/v1/auth/**")).permitAll()
 
-                        // 2. අලුතින් එක් කළ Shuttle API සඳහා අවසරය
+                        // 2. Permission for newly added Shuttle API
                         .requestMatchers(mvc.pattern("/api/v1/shuttle/**")).permitAll()
 
-                        // 3. Swagger සහ API Docs සඳහා අවසරය
+                        // 3. Permission for Swagger and API Docs
                         .requestMatchers(SWAGGER_WHITELIST).permitAll()
 
                         .requestMatchers(mvc.pattern("/api/v1/shuttle/**")).permitAll()
 
-                        // 4. Static Resources (HTML, CSS, JS) සඳහා අවසරය
+                        // 4. Permission for Static Resources (HTML, CSS, JS)
                         .requestMatchers(antMatcher("/*.html")).permitAll()
                         .requestMatchers(antMatcher("/static/**")).permitAll()
                         .requestMatchers(antMatcher("/css/**")).permitAll()
                         .requestMatchers(antMatcher("/js/**")).permitAll()
 
-                        // 5. අනෙකුත් සියලුම Request සඳහා Authentication අවශ්‍යයි
+                        // 5. Authentication required for all other requests
                         .anyRequest().authenticated())
 
                 .exceptionHandling(e -> e.authenticationEntryPoint(authenticationEntryPoint))
