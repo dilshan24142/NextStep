@@ -1,5 +1,4 @@
-// src/main/java/com/securitygateway/nextstep/payload/requests/StudyRoomBookingRequest.java
-package com.securitygateway.nextstep.Dtos.requests;
+package com.securitygateway.nextstep.payload.requests;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -15,8 +14,5 @@ public class StudyRoomBookingRequest {
     private String date; // yyyy-MM-dd
 
     @NotBlank
-    private String time; // HH:mm
-
-    // optional (if null => default 60)
-    private Integer durationMinutes;
+    private String time;
 }
