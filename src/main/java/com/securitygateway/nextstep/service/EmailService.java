@@ -69,7 +69,7 @@ public class EmailService {
         log.info("Trying to send email to {}", to);
 
         String senderName = "Security Gateway";
-        String from = "dilshans626@gmail.com";
+        String from = "studentservices@nextstep.lk";
 
         MimeMessage message = javaMailSender.createMimeMessage();
         // Enable multipart mode by passing 'true' as the second argument
@@ -85,15 +85,16 @@ public class EmailService {
                 + "<strong style='font-size:18px; color:blue;'>" + otp + "</strong>.</p>"
                 + "<p>The One Time Password is valid for the next <strong>10 minutes</strong>.</p>"
                 + "<p style='color:gray; font-size:12px;'>(This is an auto generated email, so please do not reply back. Email at "
-                + "<a href='mailto:dilshans626@gmail.com'>dilshans626@gmail.com</a> if you need assistance.)</p>"
-                + "<p>Regards,<br/>Sachintha Dilshan</p>"
-                + "<img src='cid:policeOfficerImage' alt='Police Officer' style='width:100px; height:auto;'/>"
+                + "<a href='mailto:studentservices@nextstep.lk'>studentservices@nextstep.lk</a> if you need assistance.)</p>"
+                + "<p>Regards,<br/>Next Step</p>"
+                + "<img src='cid:logoImage' alt='NextStep Logo' style='width:120px; height:auto;'/>\n"
                 + "</body>"
                 + "</html>";
         helper.setText(htmlContent, true);
 
-        ClassPathResource image = new ClassPathResource("static/security-removebg-preview.png");
-        helper.addInline("policeOfficerImage", image);
+        ClassPathResource image = new ClassPathResource("static/logo1.png");
+        helper.addInline("logoImage", image);
+
 
         javaMailSender.send(message);
         log.info("Email has been sent successfully to {}", to);
