@@ -29,12 +29,12 @@ public class FileServiceImpl implements FileService {
     @Override
     public Folder createFolder(String folderName, Long parentId) {
         Folder parent = null;
-        if(parentId != null) {
+        if (parentId != null) {
             parent = folderRepository.findById(parentId)
                     .orElseThrow(() -> new RuntimeException("Parent folder not found"));
         }
         Optional<Folder> existingFolder = folderRepository.findByNameAndParent(folderName, parent);
-        if(existingFolder.isPresent()) return existingFolder.get();
+        if (existingFolder.isPresent()) return existingFolder.get();
 
         Folder folder = Folder.builder()
                 .name(folderName)
@@ -43,7 +43,7 @@ public class FileServiceImpl implements FileService {
         folderRepository.save(folder);
 
         File dir = new File(ApplicationConstants.UPLOAD_DIR + File.separator + folderName);
-        if(!dir.exists()) dir.mkdirs();
+        if (!dir.exists()) dir.mkdirs();
 
         return folder;
     }
@@ -55,7 +55,7 @@ public class FileServiceImpl implements FileService {
 
         try {
             File dir = new File(ApplicationConstants.UPLOAD_DIR + File.separator + folder.getName());
-            if(dir.exists()) {
+            if (dir.exists()) {
                 Files.walk(dir.toPath())
                         .map(java.nio.file.Path::toFile)
                         .sorted((o1, o2) -> -o1.compareTo(o2))
@@ -70,28 +70,39 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public FileMeta uploadFile(MultipartFile file, Long folderId, String uploaderEmail, boolean isAdmin) {
+
         Folder folder = folderRepository.findById(folderId)
                 .orElseThrow(() -> new RuntimeException("Folder not found"));
 
+        if (isAdmin && !uploaderEmail.equals("defaultadmin@example.com")) {
+            throw new RuntimeException("Only the default admin can upload admin files");
+        }
+
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-        String folderPath = ApplicationConstants.UPLOAD_DIR + File.separator + folder.getName();
-        File dest = new File(folderPath + File.separator + fileName);
+        File uploadRoot = new File(ApplicationConstants.UPLOAD_DIR);
+        File folderDir = new File(uploadRoot, folder.getName());
+
+        if (!folderDir.exists()) {
+            boolean created = folderDir.mkdirs();
+            if (!created) throw new RuntimeException("Could not create upload directory");
+        }
+
+        File destination = new File(folderDir, fileName);
         try {
-            file.transferTo(dest);
+            file.transferTo(destination);
         } catch (IOException e) {
-            throw new RuntimeException("Failed to upload file", e);
+            throw new RuntimeException("File upload failed", e);
         }
 
         FileMeta meta = FileMeta.builder()
                 .fileName(fileName)
-                .filePath(dest.getAbsolutePath())
+                .filePath(destination.getAbsolutePath())
                 .uploadedBy(uploaderEmail)
                 .folder(folder)
                 .isAdminFile(isAdmin)
                 .build();
 
-        fileMetaRepository.save(meta);
-        return meta;
+        return fileMetaRepository.save(meta);
     }
 
     @Override
@@ -99,16 +110,16 @@ public class FileServiceImpl implements FileService {
         FileMeta file = fileMetaRepository.findById(fileId)
                 .orElseThrow(() -> new RuntimeException("File not found"));
 
-        if(file.getIsAdminFile() && !isAdmin) {
-            throw new RuntimeException("You cannot delete admin files");
+        if (file.getIsAdminFile() && !requesterEmail.equals("defaultadmin@example.com")) {
+            throw new RuntimeException("Only the default admin can delete admin files");
         }
 
-        if(!file.getUploadedBy().equals(requesterEmail) && !isAdmin) {
+        if (!file.getUploadedBy().equals(requesterEmail) && !requesterEmail.equals("defaultadmin@example.com")) {
             throw new RuntimeException("You can only delete your own files");
         }
 
         File f = new File(file.getFilePath());
-        if(f.exists()) f.delete();
+        if (f.exists()) f.delete();
 
         fileMetaRepository.delete(file);
     }
@@ -125,4 +136,3 @@ public class FileServiceImpl implements FileService {
         return fileMetaRepository.findByFolder(folder);
     }
 }
-

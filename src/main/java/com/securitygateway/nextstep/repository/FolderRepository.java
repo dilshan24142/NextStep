@@ -8,4 +8,3 @@ import java.util.Optional;
 public interface FolderRepository extends JpaRepository<Folder, Long> {
     Optional<Folder> findByNameAndParent(String name, Folder parent);
 }
-
