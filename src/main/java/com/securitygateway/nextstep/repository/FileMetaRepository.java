@@ -10,4 +10,3 @@ public interface FileMetaRepository extends JpaRepository<FileMeta, Long> {
     List<FileMeta> findByFolder(Folder folder);
     List<FileMeta> findByFileNameContainingIgnoreCase(String keyword);
 }
-

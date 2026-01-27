@@ -19,5 +19,4 @@ public interface FileService {
     List<FileMeta> searchFiles(String keyword);
 
     List<FileMeta> listFiles(Long folderId);
-
 }
