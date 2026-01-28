@@ -14,13 +14,19 @@ target/
 ####################################
 # Application config (secrets)
 ####################################
-# Ignore real config
+# Ignore real config files
 application.properties
 **/src/main/resources/application.properties
 
 # Allow example config
 !application.properties.example
 !**/src/main/resources/application.properties.example
+
+####################################
+# Sensitive Java configuration
+####################################
+# Mail configuration contains credentials
+src/main/java/com/securitygateway/nextstep/configuration/MailConfiguration.java
 
 ####################################
 # Spring Tool Suite (STS)
