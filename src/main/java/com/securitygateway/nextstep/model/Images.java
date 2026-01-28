@@ -17,5 +17,6 @@ public class Images {
     @GeneratedValue(strategy =  GenerationType.SEQUENCE, generator = "image_seq")
     @SequenceGenerator(name = "image_seq",sequenceName = "image_sequence")
     private Integer id;
-    private String imageUrl;
+    private String imagePath;
+
 }
