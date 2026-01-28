@@ -167,8 +167,8 @@ public class AuthenticationServiceImplementation implements AuthenticationServic
         String password = loginRequest.getPassword();
         try {
             User user = userRepository.findByEmail(email).orElseThrow(
-                        ResourceNotFoundException::new
-                );
+                    ResourceNotFoundException::new
+            );
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
             if (!user.getIsVerified()) {
                 return new ResponseEntity<>(GeneralAPIResponse.builder().message("User is not verified").build(), HttpStatus.BAD_REQUEST);
