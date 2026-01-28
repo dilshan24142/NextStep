@@ -32,9 +32,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String username = null;
 
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-                log.warn("Authorization header is not there or does not start with Bearer");
-                filterChain.doFilter(request, response);
-                return;
+            log.warn("Authorization header is not there or does not start with Bearer");
+            filterChain.doFilter(request, response);
+            return;
         }
 
         token = authorizationHeader.substring(7);

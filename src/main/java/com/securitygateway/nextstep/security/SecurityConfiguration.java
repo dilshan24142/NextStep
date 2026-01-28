@@ -12,49 +12,106 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
-import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
-
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfiguration {
-    private final AuthenticationEntryPoint authenticationEntryPoint;
+
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final AuthenticationProvider authenticationProvider;
+    private final AuthenticationEntryPoint authenticationEntryPoint;
 
+    // ✅ Required for mvc.pattern()
     @Bean
-    MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspector) {
+    public MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspector) {
         return new MvcRequestMatcher.Builder(introspector);
     }
-    private static final String[] SWAGGER_WHITELIST= {
+
+    // ✅ Public / Whitelisted paths
+    private static final String[] WHITELIST = {
+            "/",
+            "/api/v1/auth/**",
             "/v3/api-docs/**",
             "/swagger-ui/**",
-            "/swagger-resources/**",
-            "/configuration/ui",
-            "/configuration/security",
             "/swagger-ui.html",
+            "/swagger-resources/**",
             "/webjars/**",
-            "/file/*",
-            "/error/*",
-            "/"
+            "/error",
+            "/h2-console/**"
     };
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
-          http
-                  .csrf(AbstractHttpConfigurer::disable)
-                  .authorizeHttpRequests(auth -> auth
-                          .requestMatchers(mvc.pattern("/api/v1/auth/**")).permitAll()
-                          .requestMatchers(SWAGGER_WHITELIST).permitAll()
-                          .anyRequest().authenticated())
-                  .exceptionHandling(e -> e.authenticationEntryPoint(authenticationEntryPoint))
-                  .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                  .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                  .authenticationProvider(authenticationProvider);
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http,
+            MvcRequestMatcher.Builder mvc
+    ) throws Exception {
 
-          return http.build();
+        http
+                // ✅ Enable CORS (for frontend)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+
+                // ✅ Disable CSRF (JWT based)
+                .csrf(AbstractHttpConfigurer::disable)
+
+                // ✅ REQUIRED for H2 Console
+                .headers(headers -> headers.frameOptions(frame -> frame.disable()))
+
+                // ✅ Authorization rules
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(WHITELIST).permitAll()
+                        .anyRequest().authenticated()
+                )
+
+                // ✅ Custom unauthorized handler
+                .exceptionHandling(ex ->
+                        ex.authenticationEntryPoint(authenticationEntryPoint)
+                )
+
+                // ✅ Stateless session (JWT)
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+
+                // ✅ Authentication provider
+                .authenticationProvider(authenticationProvider)
+
+                // ✅ JWT filter
+                .addFilterBefore(
+                        jwtAuthenticationFilter,
+                        UsernamePasswordAuthenticationFilter.class
+                );
+
+        return http.build();
+    }
+
+    // ✅ CORS Configuration (Frontend support)
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        configuration.setAllowedOrigins(
+                List.of("http://localhost:5173") // 👈 frontend port
+        );
+
+        configuration.setAllowedMethods(
+                List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")
+        );
+
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source =
+                new UrlBasedCorsConfigurationSource();
+
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }
