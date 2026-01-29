@@ -1,3 +1,4 @@
+
 package com.securitygateway.nextstep.payload.responses;
 
 import com.securitygateway.nextstep.model.BookingStatus;
