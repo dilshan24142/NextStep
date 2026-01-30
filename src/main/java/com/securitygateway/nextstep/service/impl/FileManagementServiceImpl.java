@@ -1,16 +1,17 @@
-package com.securitygateway.nextstep.service.impl;
+package com.securitygateway.nextstep.service.implementation;
 
 import com.securitygateway.nextstep.exceptions.ResourceNotFoundException;
 import com.securitygateway.nextstep.model.*;
-import com.securitygateway.nextstep.Dtos.requests.CreateFolderRequest;
-import com.securitygateway.nextstep.Dtos.responses.FileResponse;
-import com.securitygateway.nextstep.Dtos.responses.FolderResponse;
-import com.securitygateway.nextstep.Dtos.responses.GeneralAPIResponse;
+import com.securitygateway.nextstep.payload.requests.CreateFolderRequest;
+import com.securitygateway.nextstep.payload.responses.FileResponse;
+import com.securitygateway.nextstep.payload.responses.FolderResponse;
+import com.securitygateway.nextstep.payload.responses.GeneralAPIResponse;
 import com.securitygateway.nextstep.repository.FileRepository;
 import com.securitygateway.nextstep.repository.FolderRepository;
 import com.securitygateway.nextstep.repository.UserRepository;
+import com.securitygateway.nextstep.service.EmailService;
 import com.securitygateway.nextstep.service.FileManagementService;
-import com.securitygateway.nextstep.service.FileNotificationService;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
@@ -24,14 +25,18 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import com.securitygateway.nextstep.service.FileNotificationService;
 
 
 @Service
@@ -490,20 +495,16 @@ public class FileManagementServiceImpl implements FileManagementService {
         }
     }
 
-    // ⭐⭐⭐ FIXED: Pass current user instead of file uploader ⭐⭐⭐
     @Override
-    public ResponseEntity<?> getFilesInFolder(Long folderId, String userEmail) {
+    public ResponseEntity<?> getFilesInFolder(Long folderId) {
         try {
-            User currentUser = userRepository.findByEmail(userEmail.trim().toLowerCase())
-                    .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-
             Folder folder = folderRepository.findById(folderId)
                     .orElseThrow(() -> new ResourceNotFoundException("Folder not found"));
 
             List<FileEntity> files = fileRepository.findByFolderAndIsActiveTrue(folder);
 
             List<FileResponse> responses = files.stream()
-                    .map(file -> convertToFileResponse(file, currentUser))
+                    .map(file -> convertToFileResponse(file, file.getUploadedBy()))
                     .collect(Collectors.toList());
 
             return new ResponseEntity<>(responses, HttpStatus.OK);
@@ -519,15 +520,12 @@ public class FileManagementServiceImpl implements FileManagementService {
     }
 
     @Override
-    public ResponseEntity<?> searchFiles(String searchTerm, String userEmail) {
+    public ResponseEntity<?> searchFiles(String searchTerm) {
         try {
-            User currentUser = userRepository.findByEmail(userEmail.trim().toLowerCase())
-                    .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-
             List<FileEntity> files = fileRepository.searchByFileName(searchTerm);
 
             List<FileResponse> responses = files.stream()
-                    .map(file -> convertToFileResponse(file, currentUser))
+                    .map(file -> convertToFileResponse(file, file.getUploadedBy()))
                     .collect(Collectors.toList());
 
             return new ResponseEntity<>(responses, HttpStatus.OK);
@@ -544,15 +542,12 @@ public class FileManagementServiceImpl implements FileManagementService {
     }
 
     @Override
-    public ResponseEntity<?> filterFilesByType(String fileType, String userEmail) {
+    public ResponseEntity<?> filterFilesByType(String fileType) {
         try {
-            User currentUser = userRepository.findByEmail(userEmail.trim().toLowerCase())
-                    .orElseThrow(() -> new ResourceNotFoundException("User not found"));
-
             List<FileEntity> files = fileRepository.filterByFileType(fileType);
 
             List<FileResponse> responses = files.stream()
-                    .map(file -> convertToFileResponse(file, currentUser))
+                    .map(file -> convertToFileResponse(file, file.getUploadedBy()))
                     .collect(Collectors.toList());
 
             return new ResponseEntity<>(responses, HttpStatus.OK);
