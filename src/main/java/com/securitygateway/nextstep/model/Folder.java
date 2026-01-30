@@ -1,47 +1,65 @@
 package com.securitygateway.nextstep.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Entity
 @Table(name = "folders")
-// Cyclic reference (එකම දේ කැරකී කැරකී පෙන්වීම) වැළැක්වීමට මෙය එකතු කරන්න
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "parent"})
 public class Folder {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "folder_seq")
+    @SequenceGenerator(name = "folder_seq", sequenceName = "folder_sequence", allocationSize = 1)
     private Long id;
 
     @Column(nullable = false)
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "parent_id")
-    @JsonInclude(JsonInclude.Include.NON_NULL) // Parent null නම් JSON එකේ පෙන්වන්න එපා
-    private Folder parent;
+    private String description;
 
-    // @Builder පාවිච්චි කරන නිසා default values වැඩ කරන්න මෙහෙම දෙන්න ඕනේ 👇
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
-    @Builder.Default
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_folder_id")
+    private Folder parentFolder;
+
+    @OneToMany(mappedBy = "parentFolder", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Folder> subFolders = new ArrayList<>();
 
-    @OneToMany(mappedBy = "folder", cascade = CascadeType.ALL)
-    @Builder.Default
-    private List<FileMeta> files = new ArrayList<>();
+    @OneToMany(mappedBy = "folder", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<FileEntity> files = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by", nullable = false)
+    private User createdBy;
 
     @CreationTimestamp
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+
+    @Column(nullable = false)
+    private String folderPath; // Full path: /folder1/subfolder1
+
+    @PrePersist
+    public void prePersist() {
+        if (parentFolder != null) {
+            this.folderPath = parentFolder.getFolderPath() + "/" + this.name;
+        } else {
+            this.folderPath = "/" + this.name;
+        }
+    }
 }
