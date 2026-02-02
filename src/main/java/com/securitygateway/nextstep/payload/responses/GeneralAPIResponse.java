@@ -1,14 +1,9 @@
 package com.securitygateway.nextstep.payload.responses;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Data @Builder
 public class GeneralAPIResponse {
     private String message;
 }

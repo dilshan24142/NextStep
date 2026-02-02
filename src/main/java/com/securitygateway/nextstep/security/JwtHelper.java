@@ -33,7 +33,7 @@ public class JwtHelper {
 
     public String generateAccessToken(UserDetails userDetails) {
         Map<String , Object> claims = new HashMap<>();
-       claims.put("role" , ((User) userDetails).getRole().name());
+        claims.put("role" , ((User) userDetails).getRole().name());
         return doGenerateAccessToken(claims, userDetails.getUsername());
 
     }

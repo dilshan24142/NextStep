@@ -13,9 +13,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
-
-import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
-
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 
 @Configuration
 @EnableWebSecurity
@@ -29,6 +28,7 @@ public class SecurityConfiguration {
     MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspector) {
         return new MvcRequestMatcher.Builder(introspector);
     }
+
     private static final String[] SWAGGER_WHITELIST= {
             "/v3/api-docs/**",
             "/swagger-ui/**",
@@ -42,19 +42,28 @@ public class SecurityConfiguration {
             "/"
     };
 
+    // ✅ ROLE HIERARCHY ADDED HERE
+    @Bean
+    public RoleHierarchy roleHierarchy() {
+        RoleHierarchyImpl hierarchy = new RoleHierarchyImpl();
+        hierarchy.setHierarchy("ROLE_MAIN_ADMIN > ROLE_CLUB_ADMIN");
+        return hierarchy;
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
-          http
-                  .csrf(AbstractHttpConfigurer::disable)
-                  .authorizeHttpRequests(auth -> auth
-                          .requestMatchers(mvc.pattern("/api/v1/auth/**")).permitAll()
-                          .requestMatchers(SWAGGER_WHITELIST).permitAll()
-                          .anyRequest().authenticated())
-                  .exceptionHandling(e -> e.authenticationEntryPoint(authenticationEntryPoint))
-                  .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                  .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                  .authenticationProvider(authenticationProvider);
+        http
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(mvc.pattern("/api/v1/auth/**")).permitAll()
+                        .requestMatchers(SWAGGER_WHITELIST).permitAll()
+                        .anyRequest().authenticated()
+                )
+                .exceptionHandling(e -> e.authenticationEntryPoint(authenticationEntryPoint))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .authenticationProvider(authenticationProvider);
 
-          return http.build();
+        return http.build();
     }
 }

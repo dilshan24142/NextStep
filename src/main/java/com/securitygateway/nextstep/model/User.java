@@ -5,17 +5,13 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
-
 
 @Data
 @Entity
@@ -24,23 +20,24 @@ import java.util.List;
 @Builder
 @Table(name = "users")
 public class User implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
-    @SequenceGenerator(name = "user_Seq", sequenceName = "user_sequence", allocationSize = 1)
+    @SequenceGenerator(name = "user_seq", sequenceName = "user_sequence", allocationSize = 1)
     private Long id;
 
     @Embedded
     @Valid
-    private  Username name;
+    private Username name;
 
     @Column(unique = true, nullable = false)
     @Email(message = "Enter a valid email")
     @NotBlank(message = "Email can't be blank")
     private String email;
 
-    @NotBlank(message = "Password can't be blank")
     @Column(nullable = false)
-    private String Password;
+    @NotBlank(message = "Password can't be blank")
+    private String password;
 
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Choose your gender please")
@@ -52,7 +49,7 @@ public class User implements UserDetails {
     @Column(length = 1000)
     private String profilePicture;
 
-    private Boolean isVerified ;
+    private Boolean isVerified;
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -63,31 +60,21 @@ public class User implements UserDetails {
     }
 
     @Override
-    public String getUsername() {
-        return this.email;
-    }
+    public String getUsername() { return email; }
 
     @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
+    public boolean isAccountNonExpired() { return true; }
 
     @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
+    public boolean isAccountNonLocked() { return true; }
 
     @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
+    public boolean isCredentialsNonExpired() { return true; }
 
     @Override
-    public boolean isEnabled() {
-        return true;
-    }
+    public boolean isEnabled() { return true; }
 
-    public String getFullName(){
+    public String getFullName() {
         return name.getFirstName() + " " + name.getLastName();
     }
 }
