@@ -87,4 +87,8 @@ public class AuthenticationController {
                 HttpStatus.OK
         );
     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> ef5c2ddf0a2bb347531df29b70ea1679db8d5af9
 }
