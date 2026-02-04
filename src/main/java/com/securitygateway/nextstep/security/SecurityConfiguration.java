@@ -12,6 +12,9 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
@@ -20,26 +23,25 @@ import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfiguration {
-    private final AuthenticationEntryPoint authenticationEntryPoint;
+
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final AuthenticationProvider authenticationProvider;
+    private final AuthenticationEntryPoint authenticationEntryPoint;
 
+    // ✅ Required for mvc.pattern()
     @Bean
-    MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspector) {
+    public MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspector) {
         return new MvcRequestMatcher.Builder(introspector);
     }
 
     private static final String[] SWAGGER_WHITELIST= {
             "/v3/api-docs/**",
             "/swagger-ui/**",
-            "/swagger-resources/**",
-            "/configuration/ui",
-            "/configuration/security",
             "/swagger-ui.html",
+            "/swagger-resources/**",
             "/webjars/**",
-            "/file/*",
-            "/error/*",
-            "/"
+            "/error",
+            "/h2-console/**"
     };
 
     // ✅ ROLE HIERARCHY ADDED HERE

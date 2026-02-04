@@ -26,9 +26,11 @@ public class User implements UserDetails {
     @SequenceGenerator(name = "user_seq", sequenceName = "user_sequence", allocationSize = 1)
     private Long id;
 
+    /* ===== Fields from NextStep User ===== */
+
     @Embedded
     @Valid
-    private Username name;
+    private Username name;     // firstName + lastName
 
     @Column(unique = true, nullable = false)
     @Email(message = "Enter a valid email")
@@ -37,7 +39,7 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     @NotBlank(message = "Password can't be blank")
-    private String password;
+    private String password;    // unified password field
 
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Choose your gender please")
@@ -52,29 +54,105 @@ public class User implements UserDetails {
     private Boolean isVerified;
 
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private Role role;       // NextStep Role enum
+
+    /* ===== Fields from StudentRegistrationSystem User ===== */
+
+    // old "username" (login username) - renamed to avoid confusion
+    @Column(name = "login_username")
+    private String loginUsername;    // different meaning than 'name'
+
+    // old "fullName" - renamed to avoid confusion with name field
+    @Column(name = "legacy_full_name")
+    private String legacyFullName;
+
+    // old "phone" - merged with phoneNumber
+    // phoneNumber field above already covers this
+
+    /* ===== Custom Utility Methods ===== */
+
+    public String getMergedFullName() {
+        if (name != null && name.getFirstName() != null && name.getLastName() != null) {
+            return name.getFirstName() + " " + name.getLastName();
+        }
+        // Fallback to legacy full name if name object is not properly populated
+        if (legacyFullName != null && !legacyFullName.trim().isEmpty()) {
+            return legacyFullName;
+        }
+        // Final fallback - return email if no name is available
+        return email;
+    }
+
+    // Convenience method to get full name from name object
+    public String getFullName() {
+        if (name != null) {
+            return name.getFirstName() + " " + name.getLastName();
+        }
+        return null;
+    }
+
+    /* ===== UserDetails Methods for JWT ===== */
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
+        if (role != null) {
+            return List.of(new SimpleGrantedAuthority(role.name()));
+        }
+        return List.of();
     }
 
     @Override
-    public String getUsername() { return email; }
+    public String getUsername() {
+        // For Spring Security login, email is username
+        return this.email;
+    }
 
     @Override
-    public boolean isAccountNonExpired() { return true; }
+    public boolean isAccountNonExpired() { 
+        return true; 
+    }
 
     @Override
-    public boolean isAccountNonLocked() { return true; }
+    public boolean isAccountNonLocked() { 
+        return true; 
+    }
 
     @Override
-    public boolean isCredentialsNonExpired() { return true; }
+    public boolean isCredentialsNonExpired() { 
+        return true; 
+    }
 
     @Override
-    public boolean isEnabled() { return true; }
+    public boolean isEnabled() { 
+        return true; 
+    }
 
-    public String getFullName() {
-        return name.getFirstName() + " " + name.getLastName();
+    /* ===== Helper methods for migration ===== */
+    
+    // Method to populate name from legacy full name
+    public void populateNameFromLegacyFullName() {
+        if (this.legacyFullName != null && !this.legacyFullName.trim().isEmpty()) {
+            String[] nameParts = this.legacyFullName.split("\\s+", 2);
+            if (this.name == null) {
+                this.name = new Username();
+            }
+            if (nameParts.length >= 1) {
+                this.name.setFirstName(nameParts[0]);
+            }
+            if (nameParts.length >= 2) {
+                this.name.setLastName(nameParts[1]);
+            } else {
+                this.name.setLastName("");
+            }
+        }
+    }
+
+    // Method to set name directly
+    public void setName(String firstName, String lastName) {
+        if (this.name == null) {
+            this.name = new Username();
+        }
+        this.name.setFirstName(firstName);
+        this.name.setLastName(lastName);
     }
 }

@@ -23,7 +23,7 @@ https://documenter.getpostman.com/view/29367403/2sA3XJnQvU#9e002b3b-973d-48cc-b0
 
 
 React + node 
-
+Npm run dev
 
 
 git clone https://github.com/dilshan24142/NextStep.git 
