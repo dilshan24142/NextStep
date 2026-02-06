@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 @Slf4j
-@CrossOrigin(origins = "http://localhost:5173") // Granting permission to the frontend
+@CrossOrigin(origins = "http://localhost:5173") // Frontend එකට අවසර ලබා දීම
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
@@ -87,8 +87,4 @@ public class AuthenticationController {
                 HttpStatus.OK
         );
     }
-<<<<<<< HEAD
-=======
-
->>>>>>> ef5c2ddf0a2bb347531df29b70ea1679db8d5af9
 }
