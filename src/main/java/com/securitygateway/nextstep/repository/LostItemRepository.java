@@ -1,6 +1,6 @@
-package com.example.StudentRegistrationSystem.repository;
+package com.securitygateway.nextstep.repository;
 
-import com.example.StudentRegistrationSystem.entity.LostItem;
+import com.securitygateway.nextstep.model.LostItem;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

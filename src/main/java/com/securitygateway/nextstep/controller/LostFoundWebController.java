@@ -1,8 +1,8 @@
 // src/main/java/com/example/StudentRegistrationSystem/controller/LostFoundWebController.java
-package com.example.StudentRegistrationSystem.controller;
+package com.securitygateway.nextstep.controller;
 
-import com.example.StudentRegistrationSystem.entity.LostItem;
-import com.example.StudentRegistrationSystem.service.LostItemService;
+import com.securitygateway.nextstep.model.LostItem;
+import com.securitygateway.nextstep.service.LostItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;

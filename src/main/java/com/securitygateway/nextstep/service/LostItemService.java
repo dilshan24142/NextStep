@@ -1,7 +1,7 @@
-package com.example.StudentRegistrationSystem.service;
+package com.securitygateway.nextstep.service;
 
-import com.example.StudentRegistrationSystem.entity.LostItem;
-import com.example.StudentRegistrationSystem.repository.LostItemRepository;
+import com.securitygateway.nextstep.model.LostItem;
+import com.securitygateway.nextstep.repository.LostItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
