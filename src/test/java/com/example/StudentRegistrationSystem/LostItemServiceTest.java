@@ -1,7 +1,7 @@
 package com.example.StudentRegistrationSystem;
 
-import com.example.StudentRegistrationSystem.entity.LostItem;
-import com.example.StudentRegistrationSystem.service.LostItemService;
+import com.securitygateway.nextstep.model.LostItem;
+import com.securitygateway.nextstep.service.LostItemService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
