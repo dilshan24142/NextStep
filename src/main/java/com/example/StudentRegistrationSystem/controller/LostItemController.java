@@ -21,64 +21,63 @@ public class LostItemController {
     @Autowired
     private LostItemService lostItemService;
 
-    // Report a lost item
-    @PostMapping("/report")
-    public ResponseEntity<?> reportItem(@Valid @RequestBody LostItem lostItem, BindingResult result) {
-        if (result.hasErrors()) {
-            Map<String, String> errors = new HashMap<>();
-            result.getFieldErrors().forEach(error ->
-                    errors.put(error.getField(), error.getDefaultMessage()));
-            return ResponseEntity.badRequest().body(errors);
-        }
 
-        LostItem savedItem = lostItemService.reportLostItem(lostItem);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedItem);
-    }
-
-    // Get all items with pagination
+    // GET all items (without pagination)
     @GetMapping
-    public ResponseEntity<Page<LostItem>> getAllItems(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sortBy) {
-        Page<LostItem> items = lostItemService.getAllItemsPaginated(page, size, sortBy);
-        return ResponseEntity.ok(items);
+    public ResponseEntity<List<LostItem>> getAllItems() {
+        return ResponseEntity.ok(lostItemService.getAllItemsList());
     }
 
-    // Get item by ID
+    // GET all items with pagination (for API) - CHANGED METHOD NAME
+    @GetMapping("/paginated")
+    public ResponseEntity<Page<LostItem>> getAllItemsPaginated(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        // Changed from getAllItemsPaginated to getAllItems
+        return ResponseEntity.ok(lostItemService.getAllItems(page, size));
+    }
+
+    // POST - Create new lost item
+    @PostMapping
+    public ResponseEntity<LostItem> createLostItem(@RequestBody LostItem lostItem) {
+        LostItem newItem = lostItemService.createItem(lostItem);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newItem);
+    }
+
+    // GET by ID
     @GetMapping("/{id}")
     public ResponseEntity<LostItem> getItemById(@PathVariable Long id) {
-        LostItem item = lostItemService.getItemById(id);
-        return ResponseEntity.ok(item);
+        return ResponseEntity.ok(lostItemService.getItemById(id));
+    }
+
+    // PUT - Update item
+    @PutMapping("/{id}")
+    public ResponseEntity<LostItem> updateItem(@PathVariable Long id, @RequestBody LostItem lostItem) {
+        return ResponseEntity.ok(lostItemService.updateItem(id, lostItem));
+    }
+
+    // DELETE item
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteItem(@PathVariable Long id) {
+        lostItemService.deleteItem(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    // GET unclaimed items
+    @GetMapping("/unclaimed")
+    public ResponseEntity<List<LostItem>> getUnclaimedItems() {
+        return ResponseEntity.ok(lostItemService.getUnclaimedItems());
     }
 
     // Search items
     @GetMapping("/search")
     public ResponseEntity<List<LostItem>> searchItems(@RequestParam String keyword) {
-        List<LostItem> items = lostItemService.searchItems(keyword);
-        return ResponseEntity.ok(items);
+        return ResponseEntity.ok(lostItemService.searchItemsList(keyword));
     }
 
-    // Get all unclaimed items with pagination
-    @GetMapping("/unclaimed")
-    public ResponseEntity<Page<LostItem>> getUnclaimedItems(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        Page<LostItem> items = lostItemService.getUnclaimedItemsPaginated(page, size);
-        return ResponseEntity.ok(items);
-    }
-
-    // Claim an item
-    @PutMapping("/claim/{id}")
+    // Claim item
+    @PutMapping("/{id}/claim")
     public ResponseEntity<LostItem> claimItem(@PathVariable Long id) {
-        LostItem item = lostItemService.claimItem(id);
-        return ResponseEntity.ok(item);
-    }
-
-    // Delete an item
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteItem(@PathVariable Long id) {
-        lostItemService.deleteItem(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(lostItemService.claimItem(id));
     }
 }
