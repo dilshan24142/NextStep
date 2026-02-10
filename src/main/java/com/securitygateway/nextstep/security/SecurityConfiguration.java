@@ -44,17 +44,17 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
-          http
-                  .csrf(AbstractHttpConfigurer::disable)
-                  .authorizeHttpRequests(auth -> auth
-                          .requestMatchers(mvc.pattern("/api/v1/auth/**")).permitAll()
-                          .requestMatchers(SWAGGER_WHITELIST).permitAll()
-                          .anyRequest().authenticated())
-                  .exceptionHandling(e -> e.authenticationEntryPoint(authenticationEntryPoint))
-                  .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                  .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                  .authenticationProvider(authenticationProvider);
+        http
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(mvc.pattern("/api/v1/auth/**")).permitAll()
+                        .requestMatchers(SWAGGER_WHITELIST).permitAll()
+                        .anyRequest().authenticated())
+                .exceptionHandling(e -> e.authenticationEntryPoint(authenticationEntryPoint))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .authenticationProvider(authenticationProvider);
 
-          return http.build();
+        return http.build();
     }
 }
