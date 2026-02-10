@@ -26,20 +26,20 @@ public class User implements UserDetails {
     @SequenceGenerator(name = "user_seq", sequenceName = "user_sequence", allocationSize = 1)
     private Long id;
 
-    /* ===== Fields from NextStep User ===== */
+    /* ===== NextStep User Fields ===== */
 
     @Embedded
     @Valid
-    private Username name;     // firstName + lastName
+    private Username name; // firstName + lastName
 
     @Column(unique = true, nullable = false)
     @Email(message = "Enter a valid email")
     @NotBlank(message = "Email can't be blank")
     private String email;
 
-    @NotBlank(message = "Password can't be blank")
     @Column(nullable = false)
-    private String password;    // unified password field
+    @NotBlank(message = "Password can't be blank")
+    private String password;
 
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Choose your gender please")
@@ -51,44 +51,49 @@ public class User implements UserDetails {
     @Column(length = 1000)
     private String profilePicture;
 
-    private Boolean isVerified;
+    private Boolean isVerified = false;
 
     @Enumerated(EnumType.STRING)
-    private Role role;       // NextStep Role enum
+    @NotNull
+    private Role role;
 
-    /* ===== Fields from StudentRegistrationSystem User ===== */
+    /* ===== Old Student Registration System Fields (Backward compatibility) ===== */
 
-    // old "username" (login username)
-    private String username;    // different meaning than 'name'
+    private String username;   // old login username
+    private String fullName;   // old full name
+    private String phone;      // old phone
 
-    // old "fullName"
-    private String fullName;
-
-    // old "phone"
-    private String phone;
-
-    /* ===== Custom Utility Methods ===== */
+    /* ===== Utility Methods ===== */
 
     public String getMergedFullName() {
         if (name != null) {
             return name.getFirstName() + " " + name.getLastName();
         }
-        return fullName; // fallback from old system
+        return fullName;
     }
 
-    /* ===== UserDetails Methods for JWT ===== */
+    public String getFullName() {
+        if (name != null) {
+            return name.getFirstName() + " " + name.getLastName();
+        }
+        return fullName;
+    }
+
+    /* =======================
+       Spring Security Methods
+       ======================= */
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (role != null) {
-            return List.of(new SimpleGrantedAuthority(role.name()));
+            return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
         }
         return List.of();
     }
 
     @Override
     public String getUsername() {
-        // For Spring Security login, email is username
+        // Spring Security login uses email
         return this.email;
     }
 
@@ -102,5 +107,7 @@ public class User implements UserDetails {
     public boolean isCredentialsNonExpired() { return true; }
 
     @Override
-    public boolean isEnabled() { return true; }
+    public boolean isEnabled() {
+        return Boolean.TRUE.equals(this.isVerified);
+    }
 }

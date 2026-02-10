@@ -1,7 +1,7 @@
 package com.securitygateway.nextstep.security;
 
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,44 +23,81 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
     private final JwtHelper jwtHelper;
     private final UserDetailsService userDetailsService;
-    @Override
-    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
-        String authorizationHeader = request.getHeader("Authorization");
-        String token;
-        String username = null;
 
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            log.warn("Authorization header is not there or does not start with Bearer");
+    // Skip authentication endpoints & swagger
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        return path.startsWith("/api/v1/auth/")
+                || path.startsWith("/v3/api-docs")
+                || path.startsWith("/swagger-ui")
+                || path.equals("/swagger-ui.html")
+                || path.startsWith("/swagger-resources")
+                || path.startsWith("/webjars");
+    }
+
+    @Override
+    protected void doFilterInternal(
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain filterChain
+    ) throws ServletException, IOException {
+
+        String header = request.getHeader("Authorization");
+
+        // No token → continue request (not an error)
+        if (header == null || !header.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        token = authorizationHeader.substring(7);
+        String token = header.substring(7).trim();
+        String username;
+
         try {
             username = jwtHelper.extractUsername(token);
-        }
-        catch(IllegalStateException e) {log.error("Error extracting username from token");}
-        catch(ExpiredJwtException e) {log.error("Token has expired");}
-        catch(MalformedJwtException e) {log.error("Token is malformed");}
-        catch(Exception e) {log.error("An error occurred while extracting username from token");}
 
-        if(username != null && SecurityContextHolder.getContext().getAuthentication() == null)
-        {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            if(jwtHelper.isTokenValid(token, userDetails)) {
-                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+            if (username == null || username.isBlank()) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT invalid");
+                return;
             }
-            else {
-                log.error("Token is invalid");
+
+        } catch (ExpiredJwtException e) {
+            log.warn("JWT expired: {}", e.getMessage());
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT expired");
+            return;
+
+        } catch (JwtException | IllegalArgumentException e) {
+            log.warn("JWT error: {}", e.getMessage());
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT invalid");
+            return;
+        }
+
+        // Authenticate user if not already authenticated
+        if (SecurityContextHolder.getContext().getAuthentication() == null) {
+
+            UserDetails userDetails =
+                    userDetailsService.loadUserByUsername(username.trim().toLowerCase());
+
+            if (!jwtHelper.isTokenValid(token, userDetails)) {
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT invalid");
+                return;
             }
+
+            UsernamePasswordAuthenticationToken auth =
+                    new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null,
+                            userDetails.getAuthorities()
+                    );
+
+            auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(auth);
         }
-        else {
-            log.error("Username is null or Security Context Authentication is not null");
-        }
+
         filterChain.doFilter(request, response);
     }
 }
