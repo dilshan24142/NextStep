@@ -12,106 +12,49 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
-import java.util.List;
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
+
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfiguration {
-
+    private final AuthenticationEntryPoint authenticationEntryPoint;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final AuthenticationProvider authenticationProvider;
-    private final AuthenticationEntryPoint authenticationEntryPoint;
 
-    // ✅ Required for mvc.pattern()
     @Bean
-    public MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspector) {
+    MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspector) {
         return new MvcRequestMatcher.Builder(introspector);
     }
-
-    // ✅ Public / Whitelisted paths
-    private static final String[] WHITELIST = {
-            "/",
-            "/api/v1/auth/**",
+    private static final String[] SWAGGER_WHITELIST= {
             "/v3/api-docs/**",
             "/swagger-ui/**",
-            "/swagger-ui.html",
             "/swagger-resources/**",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui.html",
             "/webjars/**",
-            "/error",
-            "/h2-console/**"
+            "/file/*",
+            "/error/*",
+            "/"
     };
 
     @Bean
-    public SecurityFilterChain securityFilterChain(
-            HttpSecurity http,
-            MvcRequestMatcher.Builder mvc
-    ) throws Exception {
-
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
         http
-                // ✅ Enable CORS (for frontend)
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-
-                // ✅ Disable CSRF (JWT based)
                 .csrf(AbstractHttpConfigurer::disable)
-
-                // ✅ REQUIRED for H2 Console
-                .headers(headers -> headers.frameOptions(frame -> frame.disable()))
-
-                // ✅ Authorization rules
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(WHITELIST).permitAll()
-                        .anyRequest().authenticated()
-                )
-
-                // ✅ Custom unauthorized handler
-                .exceptionHandling(ex ->
-                        ex.authenticationEntryPoint(authenticationEntryPoint)
-                )
-
-                // ✅ Stateless session (JWT)
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-
-                // ✅ Authentication provider
-                .authenticationProvider(authenticationProvider)
-
-                // ✅ JWT filter
-                .addFilterBefore(
-                        jwtAuthenticationFilter,
-                        UsernamePasswordAuthenticationFilter.class
-                );
+                        .requestMatchers(mvc.pattern("/api/v1/auth/**")).permitAll()
+                        .requestMatchers(SWAGGER_WHITELIST).permitAll()
+                        .anyRequest().authenticated())
+                .exceptionHandling(e -> e.authenticationEntryPoint(authenticationEntryPoint))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .authenticationProvider(authenticationProvider);
 
         return http.build();
-    }
-
-    // ✅ CORS Configuration (Frontend support)
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-
-        CorsConfiguration configuration = new CorsConfiguration();
-
-        configuration.setAllowedOrigins(
-                List.of("http://localhost:5173") // 👈 frontend port
-        );
-
-        configuration.setAllowedMethods(
-                List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")
-        );
-
-        configuration.setAllowedHeaders(List.of("*"));
-        configuration.setAllowCredentials(true);
-
-        UrlBasedCorsConfigurationSource source =
-                new UrlBasedCorsConfigurationSource();
-
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
     }
 }
