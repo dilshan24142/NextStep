@@ -1,4 +1,4 @@
-package com.example.StudentRegistrationSystem.entity;
+package com.securitygateway.nextstep.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
