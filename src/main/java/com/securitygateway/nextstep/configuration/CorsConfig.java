@@ -1,4 +1,4 @@
-package com.securitygateway.nextstep.controller;
+package com.securitygateway.nextstep.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,9 +13,9 @@ public class CorsConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**") // Allow all APIs
-                        .allowedOrigins("http://localhost:5173") // Where the frontend runs
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Actions that can be performed
+                registry.addMapping("/**")
+                        .allowedOrigins("http://localhost:5173") // ✅ Updated for new frontend port
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
             }
