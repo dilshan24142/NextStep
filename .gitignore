@@ -1,10 +1,36 @@
+####################################
+# General
+####################################
 HELP.md
+
+####################################
+# Maven
+####################################
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-### STS ###
+####################################
+# Application config (secrets)
+####################################
+# Ignore real config files
+application.properties
+**/src/main/resources/application.properties
+
+# Allow example config
+!application.properties.example
+!**/src/main/resources/application.properties.example
+
+####################################
+# Sensitive Java configuration
+####################################
+# Mail configuration contains credentials
+src/main/java/com/securitygateway/nextstep/configuration/MailConfiguration.java
+
+####################################
+# Spring Tool Suite (STS)
+####################################
 .apt_generated
 .classpath
 .factorypath
@@ -13,21 +39,37 @@ target/
 .springBeans
 .sts4-cache
 
-### IntelliJ IDEA ###
-.idea
+####################################
+# IntelliJ IDEA
+####################################
+.idea/
 *.iws
 *.iml
 *.ipr
 
-### NetBeans ###
+####################################
+# NetBeans
+####################################
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
+
+####################################
+# Gradle / Build
+####################################
 build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-### VS Code ###
+####################################
+# VS Code
+####################################
 .vscode/
+
+####################################
+# OS files
+####################################
+.DS_Store
+Thumbs.db

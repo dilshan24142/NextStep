@@ -17,22 +17,22 @@ import java.util.concurrent.TimeUnit;
 @EnableCaching
 public class CaffeineCacheConfig {
 
-     // this method is used to create a cache manager, which is used to create a cache with the name "users"
+    // this method is used to create a cache manager, which is used to create a cache with the name "users"
     @Bean
-      public CacheManager cacheManager() {
-          CaffeineCacheManager cacheManager = new CaffeineCacheManager("user");
-          cacheManager.setCaffeine(caffeineCacheBuilder());
-          return cacheManager;
-      }
+    public CacheManager cacheManager() {
+        CaffeineCacheManager cacheManager = new CaffeineCacheManager("user");
+        cacheManager.setCaffeine(caffeineCacheBuilder());
+        return cacheManager;
+    }
 
-      // this method is used to create a cache builder with the following properties
+    // this method is used to create a cache builder with the following properties
     @Bean
     public Caffeine<Object, Object> caffeineCacheBuilder() {
-          return Caffeine.newBuilder()
-                  .initialCapacity(10)
-                  .maximumSize(500)
-                  .expireAfterWrite(2, TimeUnit.MINUTES)
-                  .recordStats();
+        return Caffeine.newBuilder()
+                .initialCapacity(10)
+                .maximumSize(500)
+                .expireAfterWrite(2, TimeUnit.MINUTES)
+                .recordStats();
     }
 
 
