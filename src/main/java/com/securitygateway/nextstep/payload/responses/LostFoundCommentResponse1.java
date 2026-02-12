@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder
-public class LostFoundCommentResponse {
+public class LostFoundCommentResponse1 {
 
     private Long id;
     private String commentText;

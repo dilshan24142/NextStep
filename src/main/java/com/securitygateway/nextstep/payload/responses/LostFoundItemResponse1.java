@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 @Builder
-public class LostFoundItemResponse {
+public class LostFoundItemResponse1 {
 
     private Long id;
     private String itemName;
@@ -18,7 +18,7 @@ public class LostFoundItemResponse {
     private String pictureUrl;
     private LocalDateTime leftAt;
     private String postedBy;
-    private List<LostFoundCommentResponse> comments;
+    private List<LostFoundCommentResponse1> comments;
     private ItemStatus status;
 
 }

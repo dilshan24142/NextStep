@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class LostFoundComment {
+public class LostFoundComment1 {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +24,7 @@ public class LostFoundComment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lost_found_item_id")
-    private LostFoundItem lostFoundItem;
+    private LostFoundItem1 lostFoundItem1;
 
     @Column(nullable = false)
     private LocalDateTime commentedAt;

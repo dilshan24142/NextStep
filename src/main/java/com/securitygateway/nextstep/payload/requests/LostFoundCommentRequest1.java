@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class LostFoundCommentRequest {
+public class LostFoundCommentRequest1 {
 
     @NotBlank
     private String commentText;

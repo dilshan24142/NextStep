@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class LostFoundItem {
+public class LostFoundItem1 {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,5 +35,5 @@ public class LostFoundItem {
     private User createdBy;
 
     @OneToMany(mappedBy = "lostFoundItem", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<LostFoundComment> comments;
+    private List<LostFoundComment1> comments;
 }

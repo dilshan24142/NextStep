@@ -1,13 +1,13 @@
 package com.securitygateway.nextstep.service.implementation;
 
 import com.securitygateway.nextstep.model.*;
-import com.securitygateway.nextstep.payload.requests.LostFoundCommentRequest;
-import com.securitygateway.nextstep.payload.requests.LostFoundItemRequest;
-import com.securitygateway.nextstep.payload.responses.LostFoundCommentResponse;
-import com.securitygateway.nextstep.payload.responses.LostFoundItemResponse;
+import com.securitygateway.nextstep.payload.requests.LostFoundCommentRequest1;
+import com.securitygateway.nextstep.payload.requests.LostFoundItemRequest1;
+import com.securitygateway.nextstep.payload.responses.LostFoundCommentResponse1;
+import com.securitygateway.nextstep.payload.responses.LostFoundItemResponse1;
 import com.securitygateway.nextstep.repository.*;
 import com.securitygateway.nextstep.service.FileStorageService;
-import com.securitygateway.nextstep.service.LostFoundService;
+import com.securitygateway.nextstep.service.LostFoundService1;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,22 +19,22 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class LostFoundServiceImplementation implements LostFoundService {
+public class LostFoundService1Implementation1 implements LostFoundService1 {
 
-    private final LostFoundRepository itemRepository;
-    private final LostFoundCommentRepository commentRepository;
+    private final LostFoundRepository1 itemRepository;
+    private final LostFoundCommentRepository1 commentRepository;
     private final UserRepository userRepository;
     private final FileStorageService fileStorageService;
 
 
     // ================= CREATE ITEM =================
     @Override
-    public LostFoundItemResponse createItem(LostFoundItemRequest request, MultipartFile image, String email) {
+    public LostFoundItemResponse1 createItem(LostFoundItemRequest1 request, MultipartFile image, String email) {
         User user = userRepository.findByEmail(email).orElseThrow();
 
         String imagePath = fileStorageService.storeFile(image);
 
-        LostFoundItem item = LostFoundItem.builder()
+        LostFoundItem1 item = LostFoundItem1.builder()
                 .itemName(request.getItemName())
                 .lectureHall(request.getLectureHall())
                 .description(request.getDescription())
@@ -50,8 +50,8 @@ public class LostFoundServiceImplementation implements LostFoundService {
 
     // ================= UPDATE ITEM (ADMIN OR OWNER) =================
     @Override
-    public LostFoundItemResponse updateItem(Long id, LostFoundItemRequest request, MultipartFile image, String email) {
-        LostFoundItem item = itemRepository.findById(id).orElseThrow();
+    public LostFoundItemResponse1 updateItem(Long id, LostFoundItemRequest1 request, MultipartFile image, String email) {
+        LostFoundItem1 item = itemRepository.findById(id).orElseThrow();
         User user = userRepository.findByEmail(email).orElseThrow();
 
         boolean isAdmin = user.getRole().name().equals("ADMIN");
@@ -78,7 +78,7 @@ public class LostFoundServiceImplementation implements LostFoundService {
     // ================= DELETE ITEM (ADMIN OR OWNER) =================
     @Override
     public void deleteItem(Long id, String email) {
-        LostFoundItem item = itemRepository.findById(id).orElseThrow();
+        LostFoundItem1 item = itemRepository.findById(id).orElseThrow();
         User user = userRepository.findByEmail(email).orElseThrow();
 
         boolean isAdmin = user.getRole().name().equals("ADMIN");
@@ -93,7 +93,7 @@ public class LostFoundServiceImplementation implements LostFoundService {
 
     // ================= GET ALL =================
     @Override
-    public List<LostFoundItemResponse> getAllItems() {
+    public List<LostFoundItemResponse1> getAllItems() {
         return itemRepository.findAll()
                 .stream()
                 .map(this::mapToResponse)
@@ -102,20 +102,20 @@ public class LostFoundServiceImplementation implements LostFoundService {
 
     // ================= GET BY ID =================
     @Override
-    public LostFoundItemResponse getItemById(Long id) {
+    public LostFoundItemResponse1 getItemById(Long id) {
         return mapToResponse(itemRepository.findById(id).orElseThrow());
     }
 
     // ================= ADD COMMENT =================
     @Override
-    public LostFoundCommentResponse addComment(Long itemId, LostFoundCommentRequest request, String email) {
+    public LostFoundCommentResponse1 addComment(Long itemId, LostFoundCommentRequest1 request, String email) {
         User user = userRepository.findByEmail(email).orElseThrow();
-        LostFoundItem item = itemRepository.findById(itemId).orElseThrow();
+        LostFoundItem1 item = itemRepository.findById(itemId).orElseThrow();
 
-        LostFoundComment comment = LostFoundComment.builder()
+        LostFoundComment1 comment = LostFoundComment1.builder()
                 .commentText(request.getCommentText())
                 .commentedBy(user)
-                .lostFoundItem(item)
+                .lostFoundItem1(item)
                 .commentedAt(LocalDateTime.now())
                 .build();
 
@@ -123,8 +123,8 @@ public class LostFoundServiceImplementation implements LostFoundService {
     }
 
     // ================= MAPPERS =================
-    private LostFoundItemResponse mapToResponse(LostFoundItem item) {
-        return LostFoundItemResponse.builder()
+    private LostFoundItemResponse1 mapToResponse(LostFoundItem1 item) {
+        return LostFoundItemResponse1.builder()
                 .id(item.getId())
                 .itemName(item.getItemName())
                 .lectureHall(item.getLectureHall())
@@ -138,8 +138,8 @@ public class LostFoundServiceImplementation implements LostFoundService {
     }
 
 
-    private LostFoundCommentResponse mapComment(LostFoundComment comment) {
-        return LostFoundCommentResponse.builder()
+    private LostFoundCommentResponse1 mapComment(LostFoundComment1 comment) {
+        return LostFoundCommentResponse1.builder()
                 .id(comment.getId())
                 .commentText(comment.getCommentText())
                 .commentedBy(comment.getCommentedBy().getFullName())
@@ -148,7 +148,7 @@ public class LostFoundServiceImplementation implements LostFoundService {
     }
     @Override
     public void updateItemStatusToReturned(Long id, String email) {
-        LostFoundItem item = itemRepository.findById(id).orElseThrow();
+        LostFoundItem1 item = itemRepository.findById(id).orElseThrow();
         User user = userRepository.findByEmail(email).orElseThrow();
 
         boolean isAdmin = user.getRole().name().equals("ADMIN");
@@ -162,7 +162,7 @@ public class LostFoundServiceImplementation implements LostFoundService {
         itemRepository.save(item);
     }
     @Override
-    public List<LostFoundItemResponse> getItemsPaginated(Pageable pageable) {
+    public List<LostFoundItemResponse1> getItemsPaginated(Pageable pageable) {
         return itemRepository.findAll(pageable)
                 .stream()
                 .map(this::mapToResponse)

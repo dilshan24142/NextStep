@@ -8,7 +8,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class LostFoundItemRequest {
+public class LostFoundItemRequest1 {
 
     @NotBlank
     private String itemName;
