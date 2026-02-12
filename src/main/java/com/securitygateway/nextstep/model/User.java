@@ -27,6 +27,7 @@ public class User implements UserDetails {
     private Long id;
 
     /* ===== NextStep User Fields ===== */
+
     @Embedded
     @Valid
     private Username name; // firstName + lastName
@@ -56,39 +57,26 @@ public class User implements UserDetails {
     @NotNull
     private Role role;
 
-    /* ===== Legacy / Backward Compatibility Fields ===== */
-    @Column(name = "login_username")
-    private String loginUsername; // old login username
+    /* ===== Old Student Registration System Fields (Backward compatibility) ===== */
 
-    @Column(name = "legacy_full_name")
-    private String legacyFullName; // old full name
-
-    @Column(name = "legacy_phone")
-    private String legacyPhone; // old phone number
+    private String username;   // old login username
+    private String fullName;   // old full name
+    private String phone;      // old phone
 
     /* ===== Utility Methods ===== */
 
-    /**
-     * Returns merged full name: first tries new Username object, then legacyFullName, then email
-     */
     public String getMergedFullName() {
-        if (name != null && name.getFirstName() != null && name.getLastName() != null) {
+        if (name != null) {
             return name.getFirstName() + " " + name.getLastName();
         }
-        if (legacyFullName != null && !legacyFullName.trim().isEmpty()) {
-            return legacyFullName;
-        }
-        return email;
+        return fullName;
     }
 
-    /**
-     * Returns full name from Username object, falls back to legacyFullName
-     */
     public String getFullName() {
         if (name != null) {
             return name.getFirstName() + " " + name.getLastName();
         }
-        return legacyFullName;
+        return fullName;
     }
 
     /* =======================
@@ -105,47 +93,21 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.email; // login uses email
+        // Spring Security login uses email
+        return this.email;
     }
 
     @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
+    public boolean isAccountNonExpired() { return true; }
 
     @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
+    public boolean isAccountNonLocked() { return true; }
 
     @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
+    public boolean isCredentialsNonExpired() { return true; }
 
     @Override
     public boolean isEnabled() {
         return Boolean.TRUE.equals(this.isVerified);
-    }
-
-    /* ===== Helper Methods for Legacy Migration ===== */
-
-    public void populateNameFromLegacyFullName() {
-        if (this.legacyFullName != null && !this.legacyFullName.trim().isEmpty()) {
-            String[] nameParts = this.legacyFullName.split("\\s+", 2);
-            if (this.name == null) {
-                this.name = new Username();
-            }
-            this.name.setFirstName(nameParts[0]);
-            this.name.setLastName(nameParts.length > 1 ? nameParts[1] : "");
-        }
-    }
-
-    public void setName(String firstName, String lastName) {
-        if (this.name == null) {
-            this.name = new Username();
-        }
-        this.name.setFirstName(firstName);
-        this.name.setLastName(lastName);
     }
 }
