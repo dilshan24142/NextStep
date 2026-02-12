@@ -10,19 +10,16 @@ git push origin dev- ( use your branch name )
 dev- ( use your branch name ) 
 
 
-frontend/
-├─ index.html (Landing / Login)
-├─ register.html (Register)
-├─ user.html (Student Home)
-├─ admin.html (Admin Dashboard)
-├─ css/
-│ └─ style.css
-└─ js/
-└─ app.js
 https://documenter.getpostman.com/view/29367403/2sA3XJnQvU#9e002b3b-973d-48cc-b006-28765454f76d 
-updated haashini, sudeesha 
-neext shashin
 
+sudeesha * merged *tested
+chamoth * merged *tested       BACKEND PROGRESS
+Dilshan* merged *tested
+madushi* didnt merge
+shashin* merged *tested
+kavishka* merged
+haashini* merged *tested
+yathushiha* stable 
 
 
 React + node 
