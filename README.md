@@ -1,5 +1,5 @@
 CREATE DATABASE NextStep; db name
-
+  dev-revert {if u like to pull use dev-revert}
 git checkout dev- ( use your branch name )
 git pull origin main
 git status
@@ -19,7 +19,10 @@ frontend/
 │ └─ style.css
 └─ js/
 └─ app.js
-https://documenter.getpostman.com/view/29367403/2sA3XJnQvU#9e002b3b-973d-48cc-b006-28765454f76d
+https://documenter.getpostman.com/view/29367403/2sA3XJnQvU#9e002b3b-973d-48cc-b006-28765454f76d 
+updated haashini, sudeesha 
+neext shashin
+
 
 
 React + node 

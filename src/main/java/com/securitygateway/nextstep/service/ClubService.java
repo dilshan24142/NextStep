@@ -2,10 +2,10 @@ package com.securitygateway.nextstep.service;
 
 import com.securitygateway.nextstep.model.Club;
 import com.securitygateway.nextstep.model.ClubJoinRequest;
-import com.securitygateway.nextstep.payload.requests.ClubJoinRequestDTO;
-import com.securitygateway.nextstep.payload.requests.CreateClubRequest;
-import com.securitygateway.nextstep.payload.responses.ClubResponse;
-import com.securitygateway.nextstep.payload.responses.GeneralAPIResponse;
+import com.securitygateway.nextstep.Dtos.requests.ClubJoinRequestDTO;
+import com.securitygateway.nextstep.Dtos.requests.CreateClubRequest;
+import com.securitygateway.nextstep.Dtos.responses.ClubResponse;
+import com.securitygateway.nextstep.Dtos.responses.GeneralAPIResponse;
 import com.securitygateway.nextstep.repository.ClubJoinRequestRepository;
 import com.securitygateway.nextstep.repository.ClubRepository;
 import lombok.RequiredArgsConstructor;

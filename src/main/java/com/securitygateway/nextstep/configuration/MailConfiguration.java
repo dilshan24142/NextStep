@@ -22,10 +22,12 @@ public class MailConfiguration {
 
 
 
+
         mailSender.setUsername("hansiwijesekara85@gmail.com"); // sudessha , change with yours
         mailSender.setPassword("iherhdbiybhkvnvv"); // shashin
 
     
+
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");

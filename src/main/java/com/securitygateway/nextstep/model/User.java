@@ -26,11 +26,10 @@ public class User implements UserDetails {
     @SequenceGenerator(name = "user_seq", sequenceName = "user_sequence", allocationSize = 1)
     private Long id;
 
-    /* ===== Fields from NextStep User ===== */
-
+    /* ===== NextStep User Fields ===== */
     @Embedded
     @Valid
-    private Username name;     // firstName + lastName
+    private Username name; // firstName + lastName
 
     @Column(unique = true, nullable = false)
     @Email(message = "Enter a valid email")
@@ -39,7 +38,7 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     @NotBlank(message = "Password can't be blank")
-    private String password;    // unified password field
+    private String password;
 
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Choose your gender please")
@@ -51,103 +50,97 @@ public class User implements UserDetails {
     @Column(length = 1000)
     private String profilePicture;
 
-    private Boolean isVerified;
+    private Boolean isVerified = false;
 
     @Enumerated(EnumType.STRING)
-    private Role role;       // NextStep Role enum
+    @NotNull
+    private Role role;
 
-    /* ===== Fields from StudentRegistrationSystem User ===== */
-
-    // old "username" (login username) - renamed to avoid confusion
+    /* ===== Legacy / Backward Compatibility Fields ===== */
     @Column(name = "login_username")
-    private String loginUsername;    // different meaning than 'name'
+    private String loginUsername; // old login username
 
-    // old "fullName" - renamed to avoid confusion with name field
     @Column(name = "legacy_full_name")
-    private String legacyFullName;
+    private String legacyFullName; // old full name
 
-    // old "phone" - merged with phoneNumber
-    // phoneNumber field above already covers this
+    @Column(name = "legacy_phone")
+    private String legacyPhone; // old phone number
 
-    /* ===== Custom Utility Methods ===== */
+    /* ===== Utility Methods ===== */
 
+    /**
+     * Returns merged full name: first tries new Username object, then legacyFullName, then email
+     */
     public String getMergedFullName() {
         if (name != null && name.getFirstName() != null && name.getLastName() != null) {
             return name.getFirstName() + " " + name.getLastName();
         }
-        // Fallback to legacy full name if name object is not properly populated
         if (legacyFullName != null && !legacyFullName.trim().isEmpty()) {
             return legacyFullName;
         }
-        // Final fallback - return email if no name is available
         return email;
     }
 
-    // Convenience method to get full name from name object
+    /**
+     * Returns full name from Username object, falls back to legacyFullName
+     */
     public String getFullName() {
         if (name != null) {
             return name.getFirstName() + " " + name.getLastName();
         }
-        return null;
+        return legacyFullName;
     }
 
-    /* ===== UserDetails Methods for JWT ===== */
+    /* =======================
+       Spring Security Methods
+       ======================= */
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (role != null) {
-            return List.of(new SimpleGrantedAuthority(role.name()));
+            return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
         }
         return List.of();
     }
 
     @Override
     public String getUsername() {
-        // For Spring Security login, email is username
-        return this.email;
+        return this.email; // login uses email
     }
 
     @Override
-    public boolean isAccountNonExpired() { 
-        return true; 
+    public boolean isAccountNonExpired() {
+        return true;
     }
 
     @Override
-    public boolean isAccountNonLocked() { 
-        return true; 
+    public boolean isAccountNonLocked() {
+        return true;
     }
 
     @Override
-    public boolean isCredentialsNonExpired() { 
-        return true; 
+    public boolean isCredentialsNonExpired() {
+        return true;
     }
 
     @Override
-    public boolean isEnabled() { 
-        return true; 
+    public boolean isEnabled() {
+        return Boolean.TRUE.equals(this.isVerified);
     }
 
-    /* ===== Helper methods for migration ===== */
-    
-    // Method to populate name from legacy full name
+    /* ===== Helper Methods for Legacy Migration ===== */
+
     public void populateNameFromLegacyFullName() {
         if (this.legacyFullName != null && !this.legacyFullName.trim().isEmpty()) {
             String[] nameParts = this.legacyFullName.split("\\s+", 2);
             if (this.name == null) {
                 this.name = new Username();
             }
-            if (nameParts.length >= 1) {
-                this.name.setFirstName(nameParts[0]);
-            }
-            if (nameParts.length >= 2) {
-                this.name.setLastName(nameParts[1]);
-            } else {
-                this.name.setLastName("");
-            }
+            this.name.setFirstName(nameParts[0]);
+            this.name.setLastName(nameParts.length > 1 ? nameParts[1] : "");
         }
     }
 
-    // Method to set name directly
     public void setName(String firstName, String lastName) {
         if (this.name == null) {
             this.name = new Username();

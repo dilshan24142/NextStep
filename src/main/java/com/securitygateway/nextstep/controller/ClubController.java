@@ -1,9 +1,9 @@
 package com.securitygateway.nextstep.controller;
 
-import com.securitygateway.nextstep.payload.requests.ClubJoinRequestDTO;
-import com.securitygateway.nextstep.payload.responses.ClubResponse;
-import com.securitygateway.nextstep.payload.responses.EventResponse;
-import com.securitygateway.nextstep.payload.responses.GeneralAPIResponse;
+import com.securitygateway.nextstep.Dtos.requests.ClubJoinRequestDTO;
+import com.securitygateway.nextstep.Dtos.responses.ClubResponse;
+import com.securitygateway.nextstep.Dtos.responses.EventResponse;
+import com.securitygateway.nextstep.Dtos.responses.GeneralAPIResponse;
 import com.securitygateway.nextstep.service.ClubService;
 import com.securitygateway.nextstep.service.EventService;
 import jakarta.validation.Valid;

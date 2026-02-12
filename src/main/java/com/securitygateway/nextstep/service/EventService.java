@@ -2,10 +2,10 @@ package com.securitygateway.nextstep.service;
 
 import com.securitygateway.nextstep.model.Club;
 import com.securitygateway.nextstep.model.Event;
-import com.securitygateway.nextstep.payload.requests.CreateEventRequest;
-import com.securitygateway.nextstep.payload.requests.UpdateEventRequest;
-import com.securitygateway.nextstep.payload.responses.EventResponse;
-import com.securitygateway.nextstep.payload.responses.GeneralAPIResponse;
+import com.securitygateway.nextstep.Dtos.requests.CreateEventRequest;
+import com.securitygateway.nextstep.Dtos.requests.UpdateEventRequest;
+import com.securitygateway.nextstep.Dtos.responses.EventResponse;
+import com.securitygateway.nextstep.Dtos.responses.GeneralAPIResponse;
 import com.securitygateway.nextstep.repository.ClubRepository;
 import com.securitygateway.nextstep.repository.EventRepository;
 import lombok.RequiredArgsConstructor;

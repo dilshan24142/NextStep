@@ -1,9 +1,9 @@
 package com.securitygateway.nextstep.controller;
 
-import com.securitygateway.nextstep.payload.requests.CreateEventRequest;
-import com.securitygateway.nextstep.payload.requests.UpdateEventRequest;
-import com.securitygateway.nextstep.payload.responses.EventResponse;
-import com.securitygateway.nextstep.payload.responses.GeneralAPIResponse;
+import com.securitygateway.nextstep.Dtos.requests.CreateEventRequest;
+import com.securitygateway.nextstep.Dtos.requests.UpdateEventRequest;
+import com.securitygateway.nextstep.Dtos.responses.EventResponse;
+import com.securitygateway.nextstep.Dtos.responses.GeneralAPIResponse;
 import com.securitygateway.nextstep.service.EventService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

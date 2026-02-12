@@ -16,16 +16,18 @@ target/
 ####################################
 # Ignore real config files
 application.properties
-**/src/main/resources/application.properties
+src/main/resources/application.properties
 
-# Allow example config
+# Allow example config files
 !application.properties.example
-!**/src/main/resources/application.properties.example
+!src/main/resources/application.properties.example
 
 ####################################
 # Sensitive Java configuration
 ####################################
-# Mail configuration contains credentials
+# Security & Mail configuration contain secrets
+src/main/java/com/securitygateway/nextstep/security/SecurityConfiguration.java
+src/main/java/com/securitygateway/nextstep/controller/CorsConfig.java
 src/main/java/com/securitygateway/nextstep/configuration/MailConfiguration.java
 
 ####################################

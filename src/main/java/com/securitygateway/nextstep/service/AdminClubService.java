@@ -1,8 +1,8 @@
 package com.securitygateway.nextstep.service;
 
 import com.securitygateway.nextstep.model.ClubJoinRequest;
-import com.securitygateway.nextstep.payload.responses.ClubJoinRequestResponse;
-import com.securitygateway.nextstep.payload.responses.GeneralAPIResponse;
+import com.securitygateway.nextstep.Dtos.responses.ClubJoinRequestResponse;
+import com.securitygateway.nextstep.Dtos.responses.GeneralAPIResponse;
 import com.securitygateway.nextstep.repository.ClubJoinRequestRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

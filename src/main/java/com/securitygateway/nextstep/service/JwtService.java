@@ -2,9 +2,9 @@ package com.securitygateway.nextstep.service;
 
 import com.securitygateway.nextstep.exceptions.ResourceNotFoundException;
 import com.securitygateway.nextstep.model.User;
-import com.securitygateway.nextstep.payload.responses.GeneralAPIResponse;
-import com.securitygateway.nextstep.payload.responses.RefreshTokenResponse;
-import com.securitygateway.nextstep.payload.responses.RegisterVerifyResponse;
+import com.securitygateway.nextstep.Dtos.responses.GeneralAPIResponse;
+import com.securitygateway.nextstep.Dtos.responses.RefreshTokenResponse;
+import com.securitygateway.nextstep.Dtos.responses.RegisterVerifyResponse;
 import com.securitygateway.nextstep.repository.UserRepository;
 import com.securitygateway.nextstep.security.JwtHelper;
 import io.jsonwebtoken.ExpiredJwtException;
