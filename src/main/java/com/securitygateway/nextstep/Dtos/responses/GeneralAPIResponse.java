@@ -1,4 +1,4 @@
-package com.securitygateway.nextstep.payload.responses;
+package com.securitygateway.nextstep.Dtos.responses;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

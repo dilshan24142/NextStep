@@ -2,7 +2,7 @@ package com.securitygateway.nextstep.controller;
 
 import com.securitygateway.nextstep.model.Stall;
 import com.securitygateway.nextstep.model.StallBooking;
-import com.securitygateway.nextstep.dto.StallBookingRequest;
+import com.securitygateway.nextstep.Dtos.requests.StallBookingRequest;
 import com.securitygateway.nextstep.repository.StallBookingRepository;
 import com.securitygateway.nextstep.repository.StallRepository;
 import org.springframework.http.ResponseEntity;

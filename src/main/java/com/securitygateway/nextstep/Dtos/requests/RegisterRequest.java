@@ -1,4 +1,4 @@
-package com.securitygateway.nextstep.payload.requests;
+package com.securitygateway.nextstep.Dtos.requests;
 
 import com.securitygateway.nextstep.model.Gender;
 import com.securitygateway.nextstep.model.Role;

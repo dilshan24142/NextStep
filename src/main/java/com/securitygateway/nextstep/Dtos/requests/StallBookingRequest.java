@@ -1,4 +1,4 @@
-package com.securitygateway.nextstep.dto;
+package com.securitygateway.nextstep.Dtos.requests;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

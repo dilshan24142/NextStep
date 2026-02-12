@@ -1,6 +1,6 @@
 package com.securitygateway.nextstep.service;
 
-import com.securitygateway.nextstep.payload.requests.CreateFolderRequest;
+import com.securitygateway.nextstep.Dtos.requests.CreateFolderRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
