@@ -1,7 +1,7 @@
 package com.securitygateway.nextstep.controller;
 
 import com.securitygateway.nextstep.model.User;
-import com.securitygateway.nextstep.payload.requests.StudyRoomBookingRequest;
+import com.securitygateway.nextstep.Dtos.requests.StudyRoomBookingRequest;
 import com.securitygateway.nextstep.service.StudyRoomService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

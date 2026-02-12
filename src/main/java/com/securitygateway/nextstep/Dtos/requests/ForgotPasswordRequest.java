@@ -1,4 +1,4 @@
-package com.securitygateway.nextstep.payload.requests;
+package com.securitygateway.nextstep.Dtos.requests;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

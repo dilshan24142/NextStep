@@ -1,14 +1,14 @@
-package com.securitygateway.nextstep.service.implementation;
+package com.securitygateway.nextstep.service.impl;
 
 import com.securitygateway.nextstep.constants.ApplicationConstants;
 import com.securitygateway.nextstep.exceptions.ResourceNotFoundException;
 import com.securitygateway.nextstep.model.User;
 import com.securitygateway.nextstep.model.Username;
-import com.securitygateway.nextstep.payload.requests.*;
-import com.securitygateway.nextstep.payload.responses.GeneralAPIResponse;
-import com.securitygateway.nextstep.payload.responses.RegisterResponse;
-import com.securitygateway.nextstep.payload.responses.RegisterVerifyResponse;
-import com.securitygateway.nextstep.payload.responses.UserProfile;
+import com.securitygateway.nextstep.Dtos.requests.*;
+import com.securitygateway.nextstep.Dtos.responses.GeneralAPIResponse;
+import com.securitygateway.nextstep.Dtos.responses.RegisterResponse;
+import com.securitygateway.nextstep.Dtos.responses.RegisterVerifyResponse;
+import com.securitygateway.nextstep.Dtos.responses.UserProfile;
 import com.securitygateway.nextstep.repository.UserRepository;
 import com.securitygateway.nextstep.service.AuthenticationService;
 import com.securitygateway.nextstep.service.EmailService;
@@ -34,7 +34,7 @@ import java.util.concurrent.CompletableFuture;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class AuthenticationServiceImplementation implements AuthenticationService {
+public class AuthenticationServiceImpl implements AuthenticationService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final OtpService otpService;

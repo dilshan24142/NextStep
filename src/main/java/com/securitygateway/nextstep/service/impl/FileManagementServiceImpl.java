@@ -1,11 +1,11 @@
-package com.securitygateway.nextstep.service.implementation;
+package com.securitygateway.nextstep.service.impl;
 
 import com.securitygateway.nextstep.exceptions.ResourceNotFoundException;
 import com.securitygateway.nextstep.model.*;
-import com.securitygateway.nextstep.payload.requests.CreateFolderRequest;
-import com.securitygateway.nextstep.payload.responses.FileResponse;
-import com.securitygateway.nextstep.payload.responses.FolderResponse;
-import com.securitygateway.nextstep.payload.responses.GeneralAPIResponse;
+import com.securitygateway.nextstep.Dtos.requests.CreateFolderRequest;
+import com.securitygateway.nextstep.Dtos.responses.FileResponse;
+import com.securitygateway.nextstep.Dtos.responses.FolderResponse;
+import com.securitygateway.nextstep.Dtos.responses.GeneralAPIResponse;
 import com.securitygateway.nextstep.repository.FileRepository;
 import com.securitygateway.nextstep.repository.FolderRepository;
 import com.securitygateway.nextstep.repository.UserRepository;

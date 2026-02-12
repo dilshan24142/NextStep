@@ -1,8 +1,8 @@
 package com.securitygateway.nextstep.controller;
 
-import com.securitygateway.nextstep.payload.requests.*;
-import com.securitygateway.nextstep.payload.responses.GeneralAPIResponse;
-import com.securitygateway.nextstep.payload.responses.RegisterResponse;
+import com.securitygateway.nextstep.Dtos.requests.*;
+import com.securitygateway.nextstep.Dtos.responses.GeneralAPIResponse;
+import com.securitygateway.nextstep.Dtos.responses.RegisterResponse;
 import com.securitygateway.nextstep.service.AuthenticationService;
 import com.securitygateway.nextstep.service.JwtService;
 import jakarta.validation.Valid;

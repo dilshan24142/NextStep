@@ -1,4 +1,4 @@
-package com.securitygateway.nextstep.payload.responses;
+package com.securitygateway.nextstep.Dtos.responses;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Error {
+public class ErrorResponse {
     private String errorCode;
     private String errorMessage;
     private String additionalInfo;
