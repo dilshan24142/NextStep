@@ -15,8 +15,7 @@ target/
 # Application config (secrets)
 ####################################
 # Ignore real config files
-application.properties
-src/main/resources/application.properties
+/src/main/resources/application.properties
 
 # Allow example config files
 !application.properties.example
@@ -26,9 +25,9 @@ src/main/resources/application.properties
 # Sensitive Java configuration
 ####################################
 # Security & Mail configuration contain secrets
-src/main/java/com/securitygateway/nextstep/security/SecurityConfiguration.java
-src/main/java/com/securitygateway/nextstep/controller/CorsConfig.java
-src/main/java/com/securitygateway/nextstep/configuration/MailConfiguration.java
+/src/main/java/com/securitygateway/nextstep/security/SecurityConfiguration.java
+/src/main/java/com/securitygateway/nextstep/controller/CorsConfig.java
+/src/main/java/com/securitygateway/nextstep/configuration/MailConfiguration.java
 
 ####################################
 # Spring Tool Suite (STS)
