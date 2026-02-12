@@ -1,7 +1,6 @@
 package com.securitygateway.nextstep.controller;
 
-import com.securitygateway.nextstep.payload.requests.CreateFolderRequest;
-import com.securitygateway.nextstep.security.CurrentUser;
+import com.securitygateway.nextstep.Dtos.requests.CreateFolderRequest;
 import com.securitygateway.nextstep.service.FileManagementService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -107,25 +106,32 @@ public class FileManagementController {
         return fileManagementService.deleteFile(fileId, userDetails.getUsername());
     }
 
+    // ⭐⭐⭐ FIXED: Pass current user email ⭐⭐⭐
     @Operation(summary = "Get Files in Folder", description = "Get all files in a specific folder")
     @GetMapping("/folders/{folderId}/files")
-    public ResponseEntity<?> getFilesInFolder(@PathVariable Long folderId) {
-        log.info("Get files request received for folder ID: {}", folderId);
-        return fileManagementService.getFilesInFolder(folderId);
+    public ResponseEntity<?> getFilesInFolder(
+            @PathVariable Long folderId,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        log.info("Get files request received for folder ID: {} by user: {}", folderId, userDetails.getUsername());
+        return fileManagementService.getFilesInFolder(folderId, userDetails.getUsername());
     }
 
     @Operation(summary = "Search Files", description = "Search files by filename")
     @GetMapping("/search")
-    public ResponseEntity<?> searchFiles(@RequestParam String searchTerm) {
-        log.info("Search files request received with term: {}", searchTerm);
-        return fileManagementService.searchFiles(searchTerm);
+    public ResponseEntity<?> searchFiles(
+            @RequestParam String searchTerm,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        log.info("Search files request received with term: {} by user: {}", searchTerm, userDetails.getUsername());
+        return fileManagementService.searchFiles(searchTerm, userDetails.getUsername());
     }
 
     @Operation(summary = "Filter Files by Type", description = "Filter files by file type (e.g., pdf, docx, jpg)")
     @GetMapping("/filter")
-    public ResponseEntity<?> filterFilesByType(@RequestParam String fileType) {
-        log.info("Filter files request received for file type: {}", fileType);
-        return fileManagementService.filterFilesByType(fileType);
+    public ResponseEntity<?> filterFilesByType(
+            @RequestParam String fileType,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        log.info("Filter files request received for file type: {} by user: {}", fileType, userDetails.getUsername());
+        return fileManagementService.filterFilesByType(fileType, userDetails.getUsername());
     }
 
     @Operation(summary = "Get My Files", description = "Get all files uploaded by current user")

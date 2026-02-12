@@ -1,7 +1,7 @@
 package com.securitygateway.nextstep.controller;
 
 import com.securitygateway.nextstep.model.Shuttle;
-import com.securitygateway.nextstep.payload.responses.GeneralAPIResponse;
+import com.securitygateway.nextstep.Dtos.responses.GeneralAPIResponse;
 import com.securitygateway.nextstep.service.ShuttleService;
 import com.securitygateway.nextstep.repository.ShuttleRepository;
 import lombok.RequiredArgsConstructor;

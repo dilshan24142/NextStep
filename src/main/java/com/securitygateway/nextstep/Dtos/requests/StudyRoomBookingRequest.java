@@ -1,5 +1,5 @@
 // src/main/java/com/securitygateway/nextstep/payload/requests/StudyRoomBookingRequest.java
-package com.securitygateway.nextstep.payload.requests;
+package com.securitygateway.nextstep.Dtos.requests;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
