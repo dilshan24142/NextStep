@@ -7,10 +7,10 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    // From NextStep
+    // NextStep login (email based authentication)
     Optional<User> findByEmail(String email);
 
-    // From your SRS project
+    // Old Student Registration System support (username based)
     Optional<User> findByUsername(String username);
     boolean existsByUsername(String username);
 }
