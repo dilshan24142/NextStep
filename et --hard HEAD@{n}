@@ -1,0 +1,64 @@
+[33mdc2646c[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mdev-sudeesha[m[33m, [m[1;31morigin/dev-sudeesha[m[33m)[m HEAD@{0}: reset: moving to HEAD@{1}
+[33mbcaea46[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{1}: pull origin main: Fast-forward
+[33mdc2646c[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mdev-sudeesha[m[33m, [m[1;31morigin/dev-sudeesha[m[33m)[m HEAD@{2}: pull origin main: Fast-forward
+[33mf65c4c0[m HEAD@{3}: checkout: moving from dev-sudeesha to dev-sudeesha
+[33mf65c4c0[m HEAD@{4}: checkout: moving from main to dev-sudeesha
+[33mc6dd057[m[33m ([m[1;32mmain[m[33m)[m HEAD@{5}: checkout: moving from dev-sudeesha to main
+[33mf65c4c0[m HEAD@{6}: checkout: moving from dev-kavishka to dev-sudeesha
+[33m4b4418f[m[33m ([m[1;32mdev-kavishka[m[33m)[m HEAD@{7}: checkout: moving from dev-sudeesha to dev-kavishka
+[33mf65c4c0[m HEAD@{8}: checkout: moving from dev-sudeesha to dev-sudeesha
+[33mf65c4c0[m HEAD@{9}: checkout: moving from dev-kavishka to dev-sudeesha
+[33m4b4418f[m[33m ([m[1;32mdev-kavishka[m[33m)[m HEAD@{10}: checkout: moving from dev-sudeesha to dev-kavishka
+[33mf65c4c0[m HEAD@{11}: pull origin main: Fast-forward
+[33mcc5cba8[m HEAD@{12}: checkout: moving from dev-chamoth to dev-sudeesha
+[33m37a169e[m[33m ([m[1;32mdev-chamoth[m[33m)[m HEAD@{13}: checkout: moving from dev-kavishka to dev-chamoth
+[33m4b4418f[m[33m ([m[1;32mdev-kavishka[m[33m)[m HEAD@{14}: checkout: moving from dev-kavishka to dev-kavishka
+[33m4b4418f[m[33m ([m[1;32mdev-kavishka[m[33m)[m HEAD@{15}: checkout: moving from dev-chamoth to dev-kavishka
+[33m37a169e[m[33m ([m[1;32mdev-chamoth[m[33m)[m HEAD@{16}: checkout: moving from dev-chamoth to dev-chamoth
+[33m37a169e[m[33m ([m[1;32mdev-chamoth[m[33m)[m HEAD@{17}: checkout: moving from dev-shashin2 to dev-chamoth
+[33m6081b39[m[33m ([m[1;31morigin/dev-shashin2[m[33m, [m[1;32mdev-shashin2[m[33m)[m HEAD@{18}: commit (merge): degygef
+[33md8cf2b6[m HEAD@{19}: pull origin dev-shashin2: Fast-forward
+[33m69fa024[m HEAD@{20}: checkout: moving from dev-sudeesha to dev-shashin2
+[33mcc5cba8[m HEAD@{21}: pull origin main: Fast-forward
+[33mb70f4bd[m HEAD@{22}: checkout: moving from main to dev-sudeesha
+[33mc6dd057[m[33m ([m[1;32mmain[m[33m)[m HEAD@{23}: checkout: moving from dev-kavishka to main
+[33m4b4418f[m[33m ([m[1;32mdev-kavishka[m[33m)[m HEAD@{24}: checkout: moving from dev-sudeesha to dev-kavishka
+[33mb70f4bd[m HEAD@{25}: commit: Fix the issues of codes merging
+[33ma499276[m HEAD@{26}: commit (merge): Fix the mergin issues
+[33mca4646b[m HEAD@{27}: checkout: moving from main to dev-sudeesha
+[33mc6dd057[m[33m ([m[1;32mmain[m[33m)[m HEAD@{28}: checkout: moving from dev-sudeesha to main
+[33mca4646b[m HEAD@{29}: checkout: moving from dev-kavishka to dev-sudeesha
+[33m4b4418f[m[33m ([m[1;32mdev-kavishka[m[33m)[m HEAD@{30}: checkout: moving from dev-sudeesha to dev-kavishka
+[33mca4646b[m HEAD@{31}: checkout: moving from main to dev-sudeesha
+[33mc6dd057[m[33m ([m[1;32mmain[m[33m)[m HEAD@{32}: checkout: moving from dev-sudeesha to main
+[33mca4646b[m HEAD@{33}: commit: Improve code comments
+[33m2970777[m HEAD@{34}: checkout: moving from dev-kavishka to dev-sudeesha
+[33m4b4418f[m[33m ([m[1;32mdev-kavishka[m[33m)[m HEAD@{35}: checkout: moving from main to dev-kavishka
+[33mc6dd057[m[33m ([m[1;32mmain[m[33m)[m HEAD@{36}: checkout: moving from dev-sudeesha to main
+[33m2970777[m HEAD@{37}: checkout: moving from main to dev-sudeesha
+[33mc6dd057[m[33m ([m[1;32mmain[m[33m)[m HEAD@{38}: checkout: moving from dev-sudeesha to main
+[33m2970777[m HEAD@{39}: checkout: moving from main to dev-sudeesha
+[33mc6dd057[m[33m ([m[1;32mmain[m[33m)[m HEAD@{40}: checkout: moving from main to main
+[33mc6dd057[m[33m ([m[1;32mmain[m[33m)[m HEAD@{41}: checkout: moving from dev-kavishka to main
+[33m4b4418f[m[33m ([m[1;32mdev-kavishka[m[33m)[m HEAD@{42}: checkout: moving from dev-sudeesha to dev-kavishka
+[33m2970777[m HEAD@{43}: checkout: moving from main to dev-sudeesha
+[33mc6dd057[m[33m ([m[1;32mmain[m[33m)[m HEAD@{44}: checkout: moving from dev-sudeesha to main
+[33m2970777[m HEAD@{45}: checkout: moving from dev-kavishka to dev-sudeesha
+[33m4b4418f[m[33m ([m[1;32mdev-kavishka[m[33m)[m HEAD@{46}: checkout: moving from main to dev-kavishka
+[33mc6dd057[m[33m ([m[1;32mmain[m[33m)[m HEAD@{47}: checkout: moving from dev-kavishka to main
+[33m4b4418f[m[33m ([m[1;32mdev-kavishka[m[33m)[m HEAD@{48}: checkout: moving from dev-sudeesha to dev-kavishka
+[33m2970777[m HEAD@{49}: checkout: moving from main to dev-sudeesha
+[33mc6dd057[m[33m ([m[1;32mmain[m[33m)[m HEAD@{50}: merge origin/dev-kavishka: Merge made by the 'ort' strategy.
+[33m80bbc1a[m HEAD@{51}: checkout: moving from dev-kavishka to main
+[33m4b4418f[m[33m ([m[1;32mdev-kavishka[m[33m)[m HEAD@{52}: checkout: moving from dev-sudeesha to dev-kavishka
+[33m2970777[m HEAD@{53}: checkout: moving from dev-kavishka to dev-sudeesha
+[33m4b4418f[m[33m ([m[1;32mdev-kavishka[m[33m)[m HEAD@{54}: checkout: moving from dev-sudeesha to dev-kavishka
+[33m2970777[m HEAD@{55}: checkout: moving from dev-kavishka to dev-sudeesha
+[33m4b4418f[m[33m ([m[1;32mdev-kavishka[m[33m)[m HEAD@{56}: checkout: moving from dev-sudeesha to dev-kavishka
+[33m2970777[m HEAD@{57}: commit: Update Shuttle Service features
+[33m87dee61[m HEAD@{58}: commit: Add Shuttle Service features
+[33mfba3375[m HEAD@{59}: commit: Gave frontend access
+[33m5ab7f41[m HEAD@{60}: commit: Add global CORS configuration to allow frontend access
+[33mfa1bc49[m HEAD@{61}: commit: Update pom.xml file
+[33m4b4418f[m[33m ([m[1;32mdev-kavishka[m[33m)[m HEAD@{62}: checkout: moving from main to dev-sudeesha
+[33m80bbc1a[m HEAD@{63}: clone: from https://github.com/dilshan24142/NextStep.git
