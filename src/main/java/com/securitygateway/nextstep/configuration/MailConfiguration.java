@@ -21,7 +21,7 @@ public class MailConfiguration {
         mailSender.setPort(587);
 
         mailSender.setUsername("kavishkadewduni@gmail.com"); // sudessha , change with yours
-        mailSender.setPassword("jhcadkfincdqzrdi"); // shashin
+        mailSender.setPassword("jhcadkfidi"); // shashin
 
 
         Properties props = mailSender.getJavaMailProperties();
