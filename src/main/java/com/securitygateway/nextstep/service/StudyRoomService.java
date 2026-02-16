@@ -1,9 +1,9 @@
 package com.securitygateway.nextstep.service;
 
 import com.securitygateway.nextstep.model.*;
-import com.securitygateway.nextstep.payload.requests.StudyRoomBookingRequest;
-import com.securitygateway.nextstep.payload.responses.GeneralAPIResponse;
-import com.securitygateway.nextstep.payload.responses.StudyRoomBookingResponse;
+import com.securitygateway.nextstep.Dtos.requests.StudyRoomBookingRequest;
+import com.securitygateway.nextstep.Dtos.responses.GeneralAPIResponse;
+import com.securitygateway.nextstep.Dtos.responses.StudyRoomBookingResponse;
 import com.securitygateway.nextstep.repository.StudyRoomBookingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;

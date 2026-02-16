@@ -1,6 +1,6 @@
 package com.securitygateway.nextstep.controller;
 
-import com.securitygateway.nextstep.payload.requests.CreateFolderRequest;
+import com.securitygateway.nextstep.Dtos.requests.CreateFolderRequest;
 import com.securitygateway.nextstep.service.FileManagementService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

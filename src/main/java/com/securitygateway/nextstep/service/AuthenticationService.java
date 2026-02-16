@@ -1,8 +1,8 @@
 package com.securitygateway.nextstep.service;
 
 
-import com.securitygateway.nextstep.payload.requests.*;
-import com.securitygateway.nextstep.payload.responses.RegisterResponse;
+import com.securitygateway.nextstep.Dtos.requests.*;
+import com.securitygateway.nextstep.Dtos.responses.RegisterResponse;
 import org.springframework.http.ResponseEntity;
 
 
