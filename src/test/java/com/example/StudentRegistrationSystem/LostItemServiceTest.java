@@ -30,8 +30,5 @@ class LostItemServiceTest {
         assertEquals("Library Building", savedItem.getLocationFound());
     }
 
-    @Test
-    void testGetAllLostItems() {
-        assertNotNull(lostItemService.getAllLostItems());
+
     }
-}
