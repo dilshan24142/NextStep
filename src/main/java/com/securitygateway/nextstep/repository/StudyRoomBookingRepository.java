@@ -1,3 +1,4 @@
+// src/main/java/com/securitygateway/nextstep/repository/StudyRoomBookingRepository.java
 package com.securitygateway.nextstep.repository;
 
 import com.securitygateway.nextstep.model.BookingStatus;
@@ -45,7 +46,7 @@ public interface StudyRoomBookingRepository extends JpaRepository<StudyRoomBooki
                        @Param("startTime") LocalTime startTime,
                        @Param("endTime") LocalTime endTime);
 
-    // ✅ overlap check (exclude one booking id) - for update
+    // ✅ overlap check exclude id (for update)
     @Query("""
         select (count(b) > 0) from StudyRoomBooking b
         where b.id <> :id

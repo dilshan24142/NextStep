@@ -1,3 +1,4 @@
+// src/main/java/com/securitygateway/nextstep/controller/StudyRoomController.java
 package com.securitygateway.nextstep.controller;
 
 import com.securitygateway.nextstep.model.User;
@@ -18,12 +19,13 @@ public class StudyRoomController {
     private final StudyRoomService studyRoomService;
 
     // =========================
-    // USER
+    // USER ENDPOINTS
     // =========================
 
     @PostMapping("/book")
     public ResponseEntity<?> book(@Valid @RequestBody StudyRoomBookingRequest req,
                                   @AuthenticationPrincipal User user) {
+        // Regular user books for self
         return studyRoomService.bookRoom(req, user);
     }
 
@@ -39,7 +41,6 @@ public class StudyRoomController {
         return studyRoomService.availability(date, time, durationMinutes);
     }
 
-    // ✅ NEW FEATURE: Update booking (owner only)
     @PutMapping("/bookings/{id}")
     public ResponseEntity<?> updateBooking(@PathVariable Long id,
                                            @Valid @RequestBody StudyRoomBookingRequest req,
@@ -54,7 +55,7 @@ public class StudyRoomController {
     }
 
     // =========================
-    // ADMIN
+    // ADMIN ENDPOINTS
     // =========================
 
     @GetMapping("/admin/bookings/all")
@@ -78,5 +79,38 @@ public class StudyRoomController {
     public ResponseEntity<?> adminDelete(@PathVariable Long id,
                                          @AuthenticationPrincipal User user) {
         return studyRoomService.adminDeleteBooking(id, user);
+    }
+
+    @PatchMapping("/admin/bookings/{id}/cancel")
+    public ResponseEntity<?> adminCancelAny(@PathVariable Long id,
+                                            @AuthenticationPrincipal User user) {
+        return studyRoomService.adminCancelAny(id, user);
+    }
+
+    @PutMapping("/admin/bookings/{id}")
+    public ResponseEntity<?> adminUpdateAny(@PathVariable Long id,
+                                            @Valid @RequestBody StudyRoomBookingRequest req,
+                                            @AuthenticationPrincipal User user) {
+        return studyRoomService.adminUpdateAny(id, req, user);
+    }
+
+    // Admin books for any user (userId in path)
+    @PostMapping("/admin/book-for-user/{userId}")
+    public ResponseEntity<?> adminBookForUser(@PathVariable Long userId,
+                                              @Valid @RequestBody StudyRoomBookingRequest req,
+                                              @AuthenticationPrincipal User user) {
+        return studyRoomService.adminBookForUser(userId, req, user);
+    }
+
+    // Admin list of all users (for sidebar)
+    @GetMapping("/admin/users")
+    public ResponseEntity<?> adminUsers(@AuthenticationPrincipal User user) {
+        return studyRoomService.adminUsers(user);
+    }
+
+    // Admin stats for all users (for charts)
+    @GetMapping("/admin/users/stats")
+    public ResponseEntity<?> adminUserStats(@AuthenticationPrincipal User user) {
+        return studyRoomService.adminUserStats(user);
     }
 }

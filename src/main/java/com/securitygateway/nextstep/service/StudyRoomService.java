@@ -1,3 +1,4 @@
+// src/main/java/com/securitygateway/nextstep/service/StudyRoomService.java
 package com.securitygateway.nextstep.service;
 
 import com.securitygateway.nextstep.model.*;
@@ -5,6 +6,7 @@ import com.securitygateway.nextstep.payload.requests.StudyRoomBookingRequest;
 import com.securitygateway.nextstep.payload.responses.GeneralAPIResponse;
 import com.securitygateway.nextstep.payload.responses.StudyRoomBookingResponse;
 import com.securitygateway.nextstep.repository.StudyRoomBookingRepository;
+import com.securitygateway.nextstep.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ import java.util.*;
 public class StudyRoomService {
 
     private final StudyRoomBookingRepository bookingRepository;
+    private final UserRepository userRepository;
 
     private static final List<String> ROOMS = List.of("A1","A2","A3","B1","B2","C1","C2","C3");
     private static final DateTimeFormatter TIME_FMT = DateTimeFormatter.ofPattern("HH:mm");
@@ -26,7 +29,6 @@ public class StudyRoomService {
     private static final LocalTime OPEN_TIME = LocalTime.of(8, 0);
     private static final LocalTime CLOSE_TIME = LocalTime.of(21, 0);
 
-    // ✅ expiry status update
     private void runExpiryNow() {
         bookingRepository.markExpired(LocalDateTime.now());
     }
@@ -59,6 +61,9 @@ public class StudyRoomService {
                 .durationMinutes(b.getDurationMinutes())
                 .status(b.getStatus())
                 .userId(b.getUser() != null ? b.getUser().getId() : null)
+                .userEmail(b.getUser() != null ? b.getUser().getEmail() : null)
+                .expireAt(b.getExpireAt())
+                .expired(b.getStatus() == BookingStatus.EXPIRED)
                 .build();
     }
 
@@ -76,7 +81,16 @@ public class StudyRoomService {
         return null;
     }
 
-    // ------------------ CREATE ------------------
+    private int normalizeDuration(Integer durationMinutes) {
+        int duration = (durationMinutes == null) ? 60 : durationMinutes;
+        if (duration <= 0 || duration > 240) throw new IllegalArgumentException("durationMinutes must be 1..240");
+        return duration;
+    }
+
+    // =========================
+    // USER
+    // =========================
+
     @Transactional
     public ResponseEntity<?> bookRoom(StudyRoomBookingRequest request, User user) {
         if (user == null || user.getId() == null) return unauthorized();
@@ -107,8 +121,10 @@ public class StudyRoomService {
             );
         }
 
-        int duration = (request.getDurationMinutes() == null) ? 60 : request.getDurationMinutes();
-        if (duration <= 0 || duration > 240) {
+        int duration;
+        try {
+            duration = normalizeDuration(request.getDurationMinutes());
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(
                     GeneralAPIResponse.builder().message("durationMinutes must be 1..240").build()
             );
@@ -125,15 +141,13 @@ public class StudyRoomService {
             );
         }
 
-        LocalDateTime expireAt = LocalDateTime.of(date, end);
-
         StudyRoomBooking booking = StudyRoomBooking.builder()
                 .room(room)
                 .date(date)
                 .startTime(start)
                 .endTime(end)
                 .durationMinutes(duration)
-                .expireAt(expireAt)
+                .expireAt(LocalDateTime.of(date, end))
                 .status(BookingStatus.ACTIVE)
                 .user(user)
                 .build();
@@ -147,20 +161,17 @@ public class StudyRoomService {
         return ResponseEntity.ok(res);
     }
 
-    // ------------------ READ: MY BOOKINGS ------------------
     @Transactional
     public ResponseEntity<?> myBookings(User user) {
         if (user == null || user.getId() == null) return unauthorized();
         runExpiryNow();
 
-        List<StudyRoomBookingResponse> list = bookingRepository
-                .findByUserIdOrderByDateDescStartTimeDesc(user.getId())
-                .stream().map(this::toRes).toList();
-
-        return ResponseEntity.ok(list);
+        return ResponseEntity.ok(
+                bookingRepository.findByUserIdOrderByDateDescStartTimeDesc(user.getId())
+                        .stream().map(this::toRes).toList()
+        );
     }
 
-    // ------------------ AVAILABILITY ------------------
     @Transactional
     public ResponseEntity<?> availability(String dateStr, String timeStr, Integer durationMinutes) {
         runExpiryNow();
@@ -183,8 +194,10 @@ public class StudyRoomService {
             );
         }
 
-        int duration = (durationMinutes == null) ? 60 : durationMinutes;
-        if (duration <= 0 || duration > 240) {
+        int duration;
+        try {
+            duration = normalizeDuration(durationMinutes);
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(
                     GeneralAPIResponse.builder().message("durationMinutes must be 1..240").build()
             );
@@ -207,11 +220,9 @@ public class StudyRoomService {
         res.put("totalRooms", ROOMS.size());
         res.put("availableRoomsCount", availableRooms.size());
         res.put("availableRooms", availableRooms);
-
         return ResponseEntity.ok(res);
     }
 
-    // ✅ NEW FEATURE: UPDATE (OWNER ONLY)
     @Transactional
     public ResponseEntity<?> updateBooking(Long id, StudyRoomBookingRequest request, User user) {
         if (user == null || user.getId() == null) return unauthorized();
@@ -230,7 +241,7 @@ public class StudyRoomService {
             );
         }
 
-        String room = request.getRoom() == null ? "" : request.getRoom().trim();
+        String room = request.getRoom().trim();
         if (!ROOMS.contains(room)) {
             return ResponseEntity.badRequest().body(
                     GeneralAPIResponse.builder().message("Invalid room. Allowed: " + ROOMS).build()
@@ -238,27 +249,16 @@ public class StudyRoomService {
         }
 
         LocalDate date;
+        LocalTime start;
+        int duration;
+
         try {
             date = LocalDate.parse(request.getDate().trim());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(
-                    GeneralAPIResponse.builder().message("Invalid date. Use yyyy-MM-dd").build()
-            );
-        }
-
-        LocalTime start;
-        try {
             start = LocalTime.parse(request.getTime().trim(), TIME_FMT);
+            duration = normalizeDuration(request.getDurationMinutes());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(
-                    GeneralAPIResponse.builder().message("Invalid time. Use HH:mm").build()
-            );
-        }
-
-        int duration = (request.getDurationMinutes() == null) ? 60 : request.getDurationMinutes();
-        if (duration <= 0 || duration > 240) {
-            return ResponseEntity.badRequest().body(
-                    GeneralAPIResponse.builder().message("durationMinutes must be 1..240").build()
+                    GeneralAPIResponse.builder().message("Invalid inputs").build()
             );
         }
 
@@ -267,7 +267,6 @@ public class StudyRoomService {
         ResponseEntity<?> timeErr = validateTimeWindow(start, end);
         if (timeErr != null) return timeErr;
 
-        // ✅ exclude current booking id when checking overlap
         if (bookingRepository.hasOverlapExcludingId(booking.getId(), room, date, start, end)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(
                     GeneralAPIResponse.builder().message("Time overlap: already booked").build()
@@ -289,7 +288,6 @@ public class StudyRoomService {
         return ResponseEntity.ok(res);
     }
 
-    // ------------------ CANCEL (OWNER ONLY) ------------------
     @Transactional
     public ResponseEntity<?> cancelBooking(Long id, User user) {
         if (user == null || user.getId() == null) return unauthorized();
@@ -316,7 +314,10 @@ public class StudyRoomService {
         );
     }
 
-    // ------------------ ADMIN: ALL BOOKINGS ------------------
+    // =========================
+    // ADMIN
+    // =========================
+
     @Transactional
     public ResponseEntity<?> adminAllBookings(User user) {
         if (user == null || user.getId() == null) return unauthorized();
@@ -333,23 +334,27 @@ public class StudyRoomService {
         return ResponseEntity.ok(res);
     }
 
-    // ------------------ ADMIN: BY DATE (ACTIVE ONLY) ------------------
     @Transactional
     public ResponseEntity<?> adminBookingsByDate(String dateStr, User user) {
         if (user == null || user.getId() == null) return unauthorized();
         if (!isAdmin(user)) return forbidden();
         runExpiryNow();
 
-        LocalDate date = LocalDate.parse(dateStr.trim());
+        LocalDate date;
+        try {
+            date = LocalDate.parse(dateStr.trim());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(
+                    GeneralAPIResponse.builder().message("Invalid date. Use yyyy-MM-dd").build()
+            );
+        }
 
-        List<StudyRoomBookingResponse> list = bookingRepository
-                .findByDateAndStatusOrderByRoomAscStartTimeAsc(date, BookingStatus.ACTIVE)
-                .stream().map(this::toRes).toList();
-
-        return ResponseEntity.ok(list);
+        return ResponseEntity.ok(
+                bookingRepository.findByDateAndStatusOrderByRoomAscStartTimeAsc(date, BookingStatus.ACTIVE)
+                        .stream().map(this::toRes).toList()
+        );
     }
 
-    // ------------------ ADMIN: BY STATUS ------------------
     @Transactional
     public ResponseEntity<?> adminBookingsByStatus(String statusStr, User user) {
         if (user == null || user.getId() == null) return unauthorized();
@@ -365,14 +370,12 @@ public class StudyRoomService {
             );
         }
 
-        List<StudyRoomBookingResponse> list = bookingRepository
-                .findByStatusOrderByDateDescStartTimeDesc(status)
-                .stream().map(this::toRes).toList();
-
-        return ResponseEntity.ok(list);
+        return ResponseEntity.ok(
+                bookingRepository.findByStatusOrderByDateDescStartTimeDesc(status)
+                        .stream().map(this::toRes).toList()
+        );
     }
 
-    // ------------------ ADMIN: HARD DELETE ------------------
     @Transactional
     public ResponseEntity<?> adminDeleteBooking(Long id, User user) {
         if (user == null || user.getId() == null) return unauthorized();
@@ -388,5 +391,168 @@ public class StudyRoomService {
         return ResponseEntity.ok(
                 GeneralAPIResponse.builder().message("Booking permanently deleted").build()
         );
+    }
+
+    @Transactional
+    public ResponseEntity<?> adminCancelAny(Long id, User user) {
+        if (user == null || user.getId() == null) return unauthorized();
+        if (!isAdmin(user)) return forbidden();
+        runExpiryNow();
+
+        StudyRoomBooking booking = bookingRepository.findById(id).orElse(null);
+        if (booking == null) {
+            return ResponseEntity.status(404).body(
+                    GeneralAPIResponse.builder().message("Booking not found").build()
+            );
+        }
+
+        if (booking.getStatus() != BookingStatus.ACTIVE) {
+            return ResponseEntity.badRequest().body(
+                    GeneralAPIResponse.builder().message("Booking already " + booking.getStatus()).build()
+            );
+        }
+
+        booking.setStatus(BookingStatus.CANCELLED);
+        bookingRepository.save(booking);
+
+        return ResponseEntity.ok(
+                GeneralAPIResponse.builder().message("Booking cancelled by admin").build()
+        );
+    }
+
+    @Transactional
+    public ResponseEntity<?> adminUpdateAny(Long id, StudyRoomBookingRequest request, User user) {
+        if (user == null || user.getId() == null) return unauthorized();
+        if (!isAdmin(user)) return forbidden();
+        runExpiryNow();
+
+        StudyRoomBooking booking = bookingRepository.findById(id).orElse(null);
+        if (booking == null) {
+            return ResponseEntity.status(404).body(
+                    GeneralAPIResponse.builder().message("Booking not found").build()
+            );
+        }
+
+        if (booking.getStatus() != BookingStatus.ACTIVE) {
+            return ResponseEntity.badRequest().body(
+                    GeneralAPIResponse.builder().message("Only ACTIVE bookings can be updated").build()
+            );
+        }
+
+        String room = request.getRoom().trim();
+        if (!ROOMS.contains(room)) {
+            return ResponseEntity.badRequest().body(
+                    GeneralAPIResponse.builder().message("Invalid room. Allowed: " + ROOMS).build()
+            );
+        }
+
+        LocalDate date;
+        LocalTime start;
+        int duration;
+
+        try {
+            date = LocalDate.parse(request.getDate().trim());
+            start = LocalTime.parse(request.getTime().trim(), TIME_FMT);
+            duration = normalizeDuration(request.getDurationMinutes());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(
+                    GeneralAPIResponse.builder().message("Invalid inputs").build()
+            );
+        }
+
+        LocalTime end = start.plusMinutes(duration);
+
+        ResponseEntity<?> timeErr = validateTimeWindow(start, end);
+        if (timeErr != null) return timeErr;
+
+        if (bookingRepository.hasOverlapExcludingId(booking.getId(), room, date, start, end)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                    GeneralAPIResponse.builder().message("Time overlap: already booked").build()
+            );
+        }
+
+        booking.setRoom(room);
+        booking.setDate(date);
+        booking.setStartTime(start);
+        booking.setEndTime(end);
+        booking.setDurationMinutes(duration);
+        booking.setExpireAt(LocalDateTime.of(date, end));
+
+        bookingRepository.save(booking);
+
+        Map<String, Object> res = new HashMap<>();
+        res.put("message", "Booking updated by admin");
+        res.put("booking", toRes(booking));
+        return ResponseEntity.ok(res);
+    }
+
+    @Transactional
+    public ResponseEntity<?> adminBookForUser(Long userId, StudyRoomBookingRequest request, User admin) {
+        if (admin == null || admin.getId() == null) return unauthorized();
+        if (!isAdmin(admin)) return forbidden();
+
+        User target = userRepository.findById(userId).orElse(null);
+        if (target == null) {
+            return ResponseEntity.status(404).body(
+                    GeneralAPIResponse.builder().message("User not found").build()
+            );
+        }
+
+        return bookRoom(request, target);
+    }
+
+    @Transactional
+    public ResponseEntity<?> adminUsers(User user) {
+        if (user == null || user.getId() == null) return unauthorized();
+        if (!isAdmin(user)) return forbidden();
+
+        List<User> users = userRepository.findAll();
+
+        List<Map<String, Object>> list = users.stream().map(u -> {
+            Map<String, Object> m = new HashMap<>();
+            m.put("id", u.getId());
+            m.put("email", u.getEmail());
+            m.put("role", u.getRole());
+            return m;
+        }).toList();
+
+        return ResponseEntity.ok(list);
+    }
+
+    @Transactional
+    public ResponseEntity<?> adminUserStats(User user) {
+        if (user == null || user.getId() == null) return unauthorized();
+        if (!isAdmin(user)) return forbidden();
+        runExpiryNow();
+
+        List<StudyRoomBooking> all = bookingRepository.findAll();
+
+        Map<Long, Map<String, Object>> stats = new LinkedHashMap<>();
+
+        for (StudyRoomBooking b : all) {
+            if (b.getUser() == null) continue;
+
+            Long uid = b.getUser().getId();
+            stats.putIfAbsent(uid, new HashMap<>());
+
+            Map<String, Object> s = stats.get(uid);
+            s.put("userId", uid);
+            s.put("email", b.getUser().getEmail());
+
+            int total = (int) s.getOrDefault("total", 0);
+            s.put("total", total + 1);
+
+            if (b.getStatus() == BookingStatus.ACTIVE) {
+                s.put("active", (int) s.getOrDefault("active", 0) + 1);
+            }
+            if (b.getStatus() == BookingStatus.CANCELLED) {
+                s.put("cancelled", (int) s.getOrDefault("cancelled", 0) + 1);
+            }
+            if (b.getStatus() == BookingStatus.EXPIRED) {
+                s.put("expired", (int) s.getOrDefault("expired", 0) + 1);
+            }
+        }
+
+        return ResponseEntity.ok(stats.values());
     }
 }
