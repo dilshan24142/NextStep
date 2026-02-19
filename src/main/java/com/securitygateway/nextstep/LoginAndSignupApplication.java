@@ -11,7 +11,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableAsync
 @EnableRetry
 public class LoginAndSignupApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(LoginAndSignupApplication.class, args);
     }

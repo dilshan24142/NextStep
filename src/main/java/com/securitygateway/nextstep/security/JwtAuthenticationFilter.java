@@ -27,7 +27,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtHelper jwtHelper;
     private final UserDetailsService userDetailsService;
 
-    // ✅ Skip auth + swagger endpoints
+    // Skip authentication endpoints & swagger
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
@@ -48,30 +48,39 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String header = request.getHeader("Authorization");
 
+        // No token → continue request (not an error)
         if (header == null || !header.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String token = header.substring(7).trim();  // ✅ IMPORTANT
+        String token = header.substring(7).trim();
         String username;
 
         try {
             username = jwtHelper.extractUsername(token);
+
             if (username == null || username.isBlank()) {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT invalid");
                 return;
             }
+
         } catch (ExpiredJwtException e) {
+            log.warn("JWT expired: {}", e.getMessage());
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT expired");
             return;
+
         } catch (JwtException | IllegalArgumentException e) {
+            log.warn("JWT error: {}", e.getMessage());
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT invalid");
             return;
         }
 
+        // Authenticate user if not already authenticated
         if (SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username.trim().toLowerCase());
+
+            UserDetails userDetails =
+                    userDetailsService.loadUserByUsername(username.trim().toLowerCase());
 
             if (!jwtHelper.isTokenValid(token, userDetails)) {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT invalid");

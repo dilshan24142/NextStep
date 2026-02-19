@@ -1,8 +1,8 @@
 package com.securitygateway.nextstep.controller;
 
-import com.securitygateway.nextstep.payload.requests.*;
-import com.securitygateway.nextstep.payload.responses.GeneralAPIResponse;
-import com.securitygateway.nextstep.payload.responses.RegisterResponse;
+import com.securitygateway.nextstep.Dtos.requests.*;
+import com.securitygateway.nextstep.Dtos.responses.GeneralAPIResponse;
+import com.securitygateway.nextstep.Dtos.responses.RegisterResponse;
 import com.securitygateway.nextstep.service.AuthenticationService;
 import com.securitygateway.nextstep.service.JwtService;
 import jakarta.validation.Valid;
@@ -13,62 +13,78 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Controller to handle Authentication and OTP Verification.
+ * Allowed Origin: http://localhost:5173 (React Frontend)
+ */
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 @Slf4j
-public class AuthenticationController implements AuthenticationInterface{
+@CrossOrigin(origins = "http://localhost:5173") 
+public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
     private final JwtService jwtService;
 
-    @PostMapping("/register")
+    // 1. User Registration
+    @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterRequest registerRequest) {
         log.info("Register request received for email: {}", registerRequest.getEmail());
         return authenticationService.registerUser(registerRequest);
     }
 
-    @PostMapping(value = "/verify" , consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    // 2. Initial Registration Verification (Via Email Link/OTP)
+    @PostMapping(value = "/verify", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> verifyRegistration(@Valid @RequestBody RegisterVerifyRequest registerVerifyRequest) {
-        log.info("registration verification request received for email {}", registerVerifyRequest.getEmail());
+        log.info("Registration verification request received for email: {}", registerVerifyRequest.getEmail());
         return authenticationService.verifyUserRegistration(registerVerifyRequest);
     }
 
+    // 3. User Login
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
-        log.info("login request received for email {}", loginRequest.getEmail());
+        log.info("Login request received for email: {}", loginRequest.getEmail());
         return authenticationService.loginUser(loginRequest);
     }
 
-    @PostMapping(value = "/send-otp", consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> forgotPassword(@Valid @RequestBody ForgotPasswordRequest forgotPasswordRequest) {
-        log.info("forgot password request received for email {}", forgotPasswordRequest.getEmail());
+    // 4. Send/Resend OTP (For Forgot Password or Verification)
+    @PostMapping(value = "/send-otp", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> sendOtp(@Valid @RequestBody ForgotPasswordRequest forgotPasswordRequest) {
+        log.info("OTP request received for email: {}", forgotPasswordRequest.getEmail());
         return authenticationService.resendOtp(forgotPasswordRequest);
     }
 
+    // 5. Verify OTP
     @PostMapping(value = "/verify-otp", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> verifyOtp(@Valid @RequestBody RegisterVerifyRequest registerVerifyRequest) {
-        log.info("OTP verification request received for email {}", registerVerifyRequest.getEmail());
+        log.info("OTP verification request received for email: {}", registerVerifyRequest.getEmail());
         return authenticationService.verifyOtp(registerVerifyRequest);
     }
 
+    // 6. Reset Password using OTP
     @PostMapping(value = "/reset-password", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordRequest resetPasswordRequest) {
-        log.info("Password reset request received for email {}", resetPasswordRequest.getEmail());
+        log.info("Password reset request received for email: {}", resetPasswordRequest.getEmail());
         return authenticationService.resetPassword(resetPasswordRequest);
     }
 
-
+    // 7. Refresh Token Generation
     @GetMapping("/getRefreshToken")
     public ResponseEntity<?> refreshToken(@RequestParam(name = "refreshToken") String refreshToken) {
         log.info("Refresh token request received");
         return jwtService.generateAccessTokenFromRefreshToken(refreshToken);
     }
 
+    // 8. Health Check / Keep-Alive Endpoint
     @PostMapping("/hello")
     public ResponseEntity<?> hello() {
-        log.info("Hello request received");
-        return new ResponseEntity<>(GeneralAPIResponse.builder().message("This Api is automated, for doing cronJob so that render does not get turned off").build(), HttpStatus.OK);
+        log.info("Health check request received");
+        return new ResponseEntity<>(
+                GeneralAPIResponse.builder()
+                        .message("API is active and running.")
+                        .build(),
+                HttpStatus.OK
+        );
     }
-
 }

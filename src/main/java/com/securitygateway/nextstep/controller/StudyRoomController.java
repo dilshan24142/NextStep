@@ -1,8 +1,7 @@
-// src/main/java/com/securitygateway/nextstep/controller/StudyRoomController.java
 package com.securitygateway.nextstep.controller;
 
 import com.securitygateway.nextstep.model.User;
-import com.securitygateway.nextstep.payload.requests.StudyRoomBookingRequest;
+import com.securitygateway.nextstep.Dtos.requests.StudyRoomBookingRequest;
 import com.securitygateway.nextstep.service.StudyRoomService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,14 +17,11 @@ public class StudyRoomController {
 
     private final StudyRoomService studyRoomService;
 
-    // =========================
-    // USER ENDPOINTS
-    // =========================
+    // ================= USER =================
 
     @PostMapping("/book")
     public ResponseEntity<?> book(@Valid @RequestBody StudyRoomBookingRequest req,
                                   @AuthenticationPrincipal User user) {
-        // Regular user books for self
         return studyRoomService.bookRoom(req, user);
     }
 
@@ -34,11 +30,10 @@ public class StudyRoomController {
         return studyRoomService.myBookings(user);
     }
 
-    @GetMapping("/availability")
-    public ResponseEntity<?> availability(@RequestParam String date,
-                                          @RequestParam String time,
-                                          @RequestParam(required = false) Integer durationMinutes) {
-        return studyRoomService.availability(date, time, durationMinutes);
+    // USER can view all bookings (read only)
+    @GetMapping("/all-bookings")
+    public ResponseEntity<?> allBookings(@AuthenticationPrincipal User user) {
+        return studyRoomService.userViewAllBookings(user);
     }
 
     @PutMapping("/bookings/{id}")
@@ -54,25 +49,18 @@ public class StudyRoomController {
         return studyRoomService.cancelBooking(id, user);
     }
 
-    // =========================
-    // ADMIN ENDPOINTS
-    // =========================
+    @GetMapping("/availability")
+    public ResponseEntity<?> availability(@RequestParam String date,
+                                          @RequestParam String time,
+                                          @RequestParam(required = false) Integer durationMinutes) {
+        return studyRoomService.availability(date, time, durationMinutes);
+    }
+
+    // ================= ADMIN =================
 
     @GetMapping("/admin/bookings/all")
     public ResponseEntity<?> adminAll(@AuthenticationPrincipal User user) {
         return studyRoomService.adminAllBookings(user);
-    }
-
-    @GetMapping("/admin/bookings/by-date")
-    public ResponseEntity<?> adminByDate(@RequestParam String date,
-                                         @AuthenticationPrincipal User user) {
-        return studyRoomService.adminBookingsByDate(date, user);
-    }
-
-    @GetMapping("/admin/bookings/by-status")
-    public ResponseEntity<?> adminByStatus(@RequestParam String status,
-                                           @AuthenticationPrincipal User user) {
-        return studyRoomService.adminBookingsByStatus(status, user);
     }
 
     @DeleteMapping("/admin/bookings/{id}")
@@ -81,36 +69,17 @@ public class StudyRoomController {
         return studyRoomService.adminDeleteBooking(id, user);
     }
 
-    @PatchMapping("/admin/bookings/{id}/cancel")
-    public ResponseEntity<?> adminCancelAny(@PathVariable Long id,
-                                            @AuthenticationPrincipal User user) {
-        return studyRoomService.adminCancelAny(id, user);
-    }
-
     @PutMapping("/admin/bookings/{id}")
-    public ResponseEntity<?> adminUpdateAny(@PathVariable Long id,
-                                            @Valid @RequestBody StudyRoomBookingRequest req,
-                                            @AuthenticationPrincipal User user) {
+    public ResponseEntity<?> adminUpdate(@PathVariable Long id,
+                                         @Valid @RequestBody StudyRoomBookingRequest req,
+                                         @AuthenticationPrincipal User user) {
         return studyRoomService.adminUpdateAny(id, req, user);
     }
 
-    // Admin books for any user (userId in path)
     @PostMapping("/admin/book-for-user/{userId}")
     public ResponseEntity<?> adminBookForUser(@PathVariable Long userId,
                                               @Valid @RequestBody StudyRoomBookingRequest req,
                                               @AuthenticationPrincipal User user) {
         return studyRoomService.adminBookForUser(userId, req, user);
-    }
-
-    // Admin list of all users (for sidebar)
-    @GetMapping("/admin/users")
-    public ResponseEntity<?> adminUsers(@AuthenticationPrincipal User user) {
-        return studyRoomService.adminUsers(user);
-    }
-
-    // Admin stats for all users (for charts)
-    @GetMapping("/admin/users/stats")
-    public ResponseEntity<?> adminUserStats(@AuthenticationPrincipal User user) {
-        return studyRoomService.adminUserStats(user);
     }
 }

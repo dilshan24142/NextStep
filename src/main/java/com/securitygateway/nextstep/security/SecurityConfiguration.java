@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -15,6 +14,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+// @EnableMethodSecurity මෙතනින් අයින් කළා
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
@@ -23,44 +23,25 @@ public class SecurityConfiguration {
     private final AuthenticationProvider authenticationProvider;
 
     private static final String[] SWAGGER_WHITELIST = {
-            "/v3/api-docs/**",
-            "/swagger-ui/**",
-            "/swagger-ui.html",
-            "/swagger-resources/**",
-            "/webjars/**"
+            "/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**",
+            "/swagger-ui.html", "/webjars/**", "/error/**", "/"
     };
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // ✅ CORS enabled (uses your MvcConfiguration)
-                .cors(Customizer.withDefaults())
-
-                // ✅ JWT stateless API => disable CSRF
                 .csrf(AbstractHttpConfigurer::disable)
-
                 .authorizeHttpRequests(auth -> auth
-                        // ✅ Public auth endpoints
                         .requestMatchers("/api/v1/auth/**").permitAll()
-
-                        // ✅ Swagger public
                         .requestMatchers(SWAGGER_WHITELIST).permitAll()
-
-                        // ✅ Everything else needs JWT
-                        .anyRequest().authenticated()
-                )
-
-                // ✅ Unauthorized handler (401)
+                        // මෙතනින් තමයි URL මට්ටමින් ආරක්ෂාව පාලනය වෙන්නේ
+                        .requestMatchers("/api/v1/files/**").authenticated()
+                        .requestMatchers("/api/v1/profile/**").authenticated()
+                        .anyRequest().authenticated())
                 .exceptionHandling(e -> e.authenticationEntryPoint(authenticationEntryPoint))
-
-                // ✅ Stateless session
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
-                // ✅ JWT filter
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-
-                // ✅ Use your DaoAuthenticationProvider from ApplicationConfiguration
-                .authenticationProvider(authenticationProvider);
+                .authenticationProvider(authenticationProvider)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
