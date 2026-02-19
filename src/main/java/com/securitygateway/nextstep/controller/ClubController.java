@@ -1,6 +1,7 @@
 package com.securitygateway.nextstep.controller;
 
 import com.securitygateway.nextstep.Dtos.requests.ClubJoinRequestDTO;
+import com.securitygateway.nextstep.Dtos.requests.CreateClubRequest;
 import com.securitygateway.nextstep.Dtos.responses.ClubResponse;
 import com.securitygateway.nextstep.Dtos.responses.EventResponse;
 import com.securitygateway.nextstep.Dtos.responses.GeneralAPIResponse;
@@ -40,4 +41,11 @@ public class ClubController {
     public ResponseEntity<List<EventResponse>> getAllEvents() {
         return eventService.getAllEvents();
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping
+    public ResponseEntity<GeneralAPIResponse> createClub(@Valid @RequestBody CreateClubRequest req){
+        return clubService.addClub(req);
+    }
+
 }
