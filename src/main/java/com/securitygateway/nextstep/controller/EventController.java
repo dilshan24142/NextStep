@@ -53,5 +53,16 @@ public class EventController {
         return eventService.getMyEvents();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<GeneralAPIResponse> deleteEvent(@PathVariable Long id){
+        return eventService.deleteEvent(id);
+    }
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{id}/reject")
+    public ResponseEntity<GeneralAPIResponse> rejectEvent(@PathVariable Long id){
+        return eventService.rejectEvent(id);
+    }
+
 
 }

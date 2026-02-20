@@ -66,4 +66,25 @@ public class ClubController {
         return clubService.getPendingRequests();
     }
 
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<GeneralAPIResponse> updateClub(
+            @PathVariable Long id,
+            @RequestBody CreateClubRequest req) {
+        return clubService.updateClub(id, req);
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<GeneralAPIResponse> deleteClub(@PathVariable Long id) {
+        return clubService.deleteClub(id);
+    }
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/join/{id}/reject")
+    public ResponseEntity<GeneralAPIResponse> rejectJoin(@PathVariable Long id){
+        return clubService.rejectJoinRequest(id);
+    }
+
+
 }
