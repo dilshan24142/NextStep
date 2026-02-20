@@ -11,5 +11,5 @@ public class ClubJoinRequestDTO {
 
     @NotNull
     @Email
-    private String studentEmail;
+    private String email;
 }

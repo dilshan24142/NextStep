@@ -1,7 +1,6 @@
 package com.securitygateway.nextstep.controller;
 
-import com.securitygateway.nextstep.Dtos.requests.CreateEventRequest;
-import com.securitygateway.nextstep.Dtos.requests.UpdateEventRequest;
+import com.securitygateway.nextstep.Dtos.requests.StudentCreateEventRequest;
 import com.securitygateway.nextstep.Dtos.responses.EventResponse;
 import com.securitygateway.nextstep.Dtos.responses.GeneralAPIResponse;
 import com.securitygateway.nextstep.service.EventService;
@@ -20,28 +19,39 @@ public class EventController {
 
     private final EventService eventService;
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping
-    public ResponseEntity<GeneralAPIResponse> createEvent(@Valid @RequestBody CreateEventRequest req){
-        return eventService.createEvent(req);
+    // STUDENT creates request
+    @PreAuthorize("hasRole('USER')")
+    @PostMapping("/request")
+    public ResponseEntity<GeneralAPIResponse> createEventRequest(
+            @Valid @RequestBody StudentCreateEventRequest req){
+        return eventService.createEventRequest(req);
     }
 
+    // ADMIN approve
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/{id}")
-    public ResponseEntity<GeneralAPIResponse> updateEvent(@PathVariable Long id,
-                                                          @Valid @RequestBody UpdateEventRequest req){
-        return eventService.updateEvent(id, req);
+    @PutMapping("/{id}/approve")
+    public ResponseEntity<GeneralAPIResponse> approveEvent(@PathVariable Long id){
+        return eventService.approveEvent(id);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/{id}")
-    public ResponseEntity<GeneralAPIResponse> deleteEvent(@PathVariable Long id){
-        return eventService.deleteEvent(id);
+    // STUDENT dashboard
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    @GetMapping("/approved")
+    public ResponseEntity<List<EventResponse>> getApprovedEvents(){
+        return eventService.getApprovedEvents();
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','STUDENT')")
-    @GetMapping
-    public ResponseEntity<List<EventResponse>> getAllEvents(){
-        return eventService.getAllEvents();
+    // ADMIN dashboard
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/pending")
+    public ResponseEntity<List<EventResponse>> getPendingEvents(){
+        return eventService.getPendingEvents();
     }
+    @GetMapping("/my")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<List<EventResponse>> getMyEvents(){
+        return eventService.getMyEvents();
+    }
+
+
 }

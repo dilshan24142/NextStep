@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor @NoArgsConstructor
 public class Event {
 
+    public enum Status { PENDING, APPROVED, REJECTED }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -17,6 +19,11 @@ public class Event {
     private String title;
     private String description;
     private LocalDateTime eventDate;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+    private String createdBy; // student email
 
     @ManyToOne
     @JoinColumn(name = "club_id")
