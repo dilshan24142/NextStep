@@ -99,4 +99,36 @@ public class EmailService {
         javaMailSender.send(message);
         log.info("Email has been sent successfully to {}", to);
     }
+    public void sendCustomEmail(String to, String subject, String messageBody) throws MessagingException, UnsupportedEncodingException {
+        log.info("Sending custom email to {}", to);
+
+        String senderName = "Security Gateway";
+        String from = "studentservices@nextstep.lk";
+
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+        helper.setFrom(from, senderName);
+        helper.setTo(to);
+        helper.setSubject(subject);
+
+        String htmlContent = "<html>"
+                + "<body>"
+                + "<p>Dear User,</p>"
+                + "<p>" + messageBody + "</p>"
+                + "<p style='color:gray; font-size:12px;'>(This is an auto-generated email, please do not reply. Email at "
+                + "<a href='mailto:studentservices@nextstep.lk'>studentservices@nextstep.lk</a> if you need assistance.)</p>"
+                + "<p>Regards,<br/>Next Step</p>"
+                + "<img src='cid:logoImage' alt='NextStep Logo' style='width:120px; height:auto;'/>"
+                + "</body>"
+                + "</html>";
+
+        helper.setText(htmlContent, true);
+
+        ClassPathResource image = new ClassPathResource("static/logo1.png");
+        helper.addInline("logoImage", image);
+
+        javaMailSender.send(message);
+        log.info("Custom email sent successfully to {}", to);
+    }
 }

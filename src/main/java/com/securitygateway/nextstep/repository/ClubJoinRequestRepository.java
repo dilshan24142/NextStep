@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface ClubJoinRequestRepository extends JpaRepository<ClubJoinRequest, Long> {
     List<ClubJoinRequest> findByStatus(ClubJoinRequest.Status status);
-    ClubJoinRequest findByClubIdAndStudentEmail(Long clubId, String email);
+    ClubJoinRequest findByClubIdAndEmail(Long clubId, String email);
 }

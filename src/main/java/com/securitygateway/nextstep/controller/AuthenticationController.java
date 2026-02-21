@@ -34,7 +34,7 @@ public class AuthenticationController {
         return authenticationService.registerUser(registerRequest);
     }
 
-    // 2. Initial Registration Verification (Via Email Link/OTP)
+    // 2. Initial Registration Verification
     @PostMapping(value = "/verify", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> verifyRegistration(@Valid @RequestBody RegisterVerifyRequest registerVerifyRequest) {
         log.info("Registration verification request received for email: {}", registerVerifyRequest.getEmail());
@@ -48,7 +48,7 @@ public class AuthenticationController {
         return authenticationService.loginUser(loginRequest);
     }
 
-    // 4. Send/Resend OTP (For Forgot Password or Verification)
+    // 4. Send/Resend OTP
     @PostMapping(value = "/send-otp", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> sendOtp(@Valid @RequestBody ForgotPasswordRequest forgotPasswordRequest) {
         log.info("OTP request received for email: {}", forgotPasswordRequest.getEmail());
@@ -62,7 +62,7 @@ public class AuthenticationController {
         return authenticationService.verifyOtp(registerVerifyRequest);
     }
 
-    // 6. Reset Password using OTP
+    // 6. Reset Password
     @PostMapping(value = "/reset-password", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordRequest resetPasswordRequest) {
         log.info("Password reset request received for email: {}", resetPasswordRequest.getEmail());
@@ -76,7 +76,7 @@ public class AuthenticationController {
         return jwtService.generateAccessTokenFromRefreshToken(refreshToken);
     }
 
-    // 8. Health Check / Keep-Alive Endpoint
+    // 8. Health Check
     @PostMapping("/hello")
     public ResponseEntity<?> hello() {
         log.info("Health check request received");

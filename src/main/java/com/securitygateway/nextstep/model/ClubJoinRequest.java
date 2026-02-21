@@ -14,7 +14,7 @@ public class ClubJoinRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String studentEmail;
+    private String email;
 
     @ManyToOne
     @JoinColumn(name = "club_id")
