@@ -10,10 +10,10 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableCaching
 @EnableAsync
 @EnableRetry
-public class LoginAndSignupApplication {
+public class NextStepApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(LoginAndSignupApplication.class, args);
+        SpringApplication.run(NextStepApplication.class, args);
     }
 
 }
