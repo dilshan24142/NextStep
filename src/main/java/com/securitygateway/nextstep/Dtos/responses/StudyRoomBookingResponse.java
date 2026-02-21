@@ -25,6 +25,7 @@ public class StudyRoomBookingResponse {
     // Admin & User display
     private Long userId;
     private String userEmail;
+    private String userName;   // ✅ ADDED
 
     // Expiry display
     private LocalDateTime expireAt;

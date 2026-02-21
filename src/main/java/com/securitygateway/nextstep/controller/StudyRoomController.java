@@ -30,7 +30,6 @@ public class StudyRoomController {
         return studyRoomService.myBookings(user);
     }
 
-    // USER can view all bookings (read only)
     @GetMapping("/all-bookings")
     public ResponseEntity<?> allBookings(@AuthenticationPrincipal User user) {
         return studyRoomService.userViewAllBookings(user);
@@ -50,12 +49,16 @@ public class StudyRoomController {
     }
 
     @GetMapping("/availability")
-    public ResponseEntity<?> availability(@RequestParam String date,
-                                          @RequestParam String time,
-                                          @RequestParam(required = false) Integer durationMinutes) {
-        return studyRoomService.availability(date, time, durationMinutes);
-    }
+    public ResponseEntity<?> availability(
+            @RequestParam String date,
+            @RequestParam(required = false) Integer durationMinutes) {
 
+        if (date == null || date.isEmpty()) {
+            return ResponseEntity.badRequest().body("Date is required");
+        }
+
+        return studyRoomService.availability(date, durationMinutes);
+    }
     // ================= ADMIN =================
 
     @GetMapping("/admin/bookings/all")
@@ -81,5 +84,11 @@ public class StudyRoomController {
                                               @Valid @RequestBody StudyRoomBookingRequest req,
                                               @AuthenticationPrincipal User user) {
         return studyRoomService.adminBookForUser(userId, req, user);
+    }
+
+
+    @GetMapping("/admin/view-all-users")
+    public ResponseEntity<?> adminViewAllUsersBookings(@AuthenticationPrincipal User admin) {
+        return studyRoomService.adminViewAllUsersBookings(admin);
     }
 }

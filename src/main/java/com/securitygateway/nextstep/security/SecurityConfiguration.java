@@ -14,7 +14,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-// @EnableMethodSecurity මෙතනින් අයින් කළා
+// @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
@@ -34,7 +34,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers(SWAGGER_WHITELIST).permitAll()
-                        // මෙතනින් තමයි URL මට්ටමින් ආරක්ෂාව පාලනය වෙන්නේ
+
                         .requestMatchers("/api/v1/files/**").authenticated()
                         .requestMatchers("/api/v1/profile/**").authenticated()
                         .anyRequest().authenticated())

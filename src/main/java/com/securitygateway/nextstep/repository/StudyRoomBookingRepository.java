@@ -2,6 +2,7 @@ package com.securitygateway.nextstep.repository;
 
 import com.securitygateway.nextstep.model.BookingStatus;
 import com.securitygateway.nextstep.model.StudyRoomBooking;
+import com.securitygateway.nextstep.model.User;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -26,7 +27,6 @@ public interface StudyRoomBookingRepository extends JpaRepository<StudyRoomBooki
     """)
     int markExpired(@Param("now") LocalDateTime now);
 
-
     @Modifying
     @Query("""
         delete from StudyRoomBooking b
@@ -34,7 +34,6 @@ public interface StudyRoomBookingRepository extends JpaRepository<StudyRoomBooki
           and b.expireAt < :now
     """)
     int deleteExpired(@Param("now") LocalDateTime now);
-
 
     // ================= OVERLAP CHECK =================
 
@@ -50,7 +49,6 @@ public interface StudyRoomBookingRepository extends JpaRepository<StudyRoomBooki
                        @Param("startTime") LocalTime startTime,
                        @Param("endTime") LocalTime endTime);
 
-
     @Query("""
         select (count(b) > 0) from StudyRoomBooking b
         where b.id <> :id
@@ -65,13 +63,10 @@ public interface StudyRoomBookingRepository extends JpaRepository<StudyRoomBooki
                                   @Param("startTime") LocalTime startTime,
                                   @Param("endTime") LocalTime endTime);
 
-
     // ================= USER BOOKINGS =================
 
     List<StudyRoomBooking> findByUserIdOrderByDateDescStartTimeDesc(Long userId);
-
     Optional<StudyRoomBooking> findByIdAndUserId(Long id, Long userId);
-
 
     // ================= ADMIN / GLOBAL =================
 
@@ -81,4 +76,7 @@ public interface StudyRoomBookingRepository extends JpaRepository<StudyRoomBooki
                                                                          BookingStatus status);
 
     List<StudyRoomBooking> findByStatusOrderByDateDescStartTimeDesc(BookingStatus status);
+
+    // ✅ New method to fetch bookings by User entity for admin view
+    List<StudyRoomBooking> findAllByUserOrderByDateDescStartTimeDesc(User user);
 }
