@@ -6,9 +6,13 @@ import lombok.*;
 import java.util.List;
 
 @Entity
-@Getter @Setter @Builder
-@AllArgsConstructor @NoArgsConstructor
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Club {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -16,6 +20,15 @@ public class Club {
     private String clubName;
     private String description;
 
-    @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
+    // ✅ Cascade delete events
+    @OneToMany(mappedBy = "club",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private List<Event> events;
+
+    // ✅ ADD THIS (VERY IMPORTANT)
+    @OneToMany(mappedBy = "club",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private List<ClubJoinRequest> joinRequests;
 }

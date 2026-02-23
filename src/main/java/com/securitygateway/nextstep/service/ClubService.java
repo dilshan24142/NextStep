@@ -173,7 +173,10 @@ public class ClubService {
 
     public ResponseEntity<GeneralAPIResponse> deleteClub(Long id) {
 
-        clubRepository.deleteById(id);
+        Club club = clubRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Club not found"));
+
+        clubRepository.delete(club);
 
         return ResponseEntity.ok(
                 GeneralAPIResponse.builder()
