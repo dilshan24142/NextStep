@@ -3,6 +3,7 @@ package com.securitygateway.nextstep.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,7 +18,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableMethodSecurity
 @RequiredArgsConstructor
-
 public class SecurityConfiguration {
 
     private final AuthenticationEntryPoint authenticationEntryPoint;
@@ -34,16 +34,36 @@ public class SecurityConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
+
+                        // Public endpoints
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers(SWAGGER_WHITELIST).permitAll()
-                        // මෙතනින් තමයි URL මට්ටමින් ආරක්ෂාව පාලනය වෙන්නේ
+
+                        // USER + ADMIN can READ
+                        .requestMatchers(HttpMethod.GET, "/api/v1/shuttle/**")
+                        .hasAnyRole("USER", "ADMIN")
+
+                        // ADMIN only can MODIFY
+                        .requestMatchers(HttpMethod.POST, "/api/v1/shuttle/**")
+                        .hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/shuttle/**")
+                        .hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/shuttle/**")
+                        .hasRole("ADMIN")
+
+                        // other protected APIs
                         .requestMatchers("/api/v1/files/**").authenticated()
                         .requestMatchers("/api/v1/profile/**").authenticated()
-                        .anyRequest().authenticated())
+
+                        // fallback
+                        .anyRequest().authenticated()
+                )
                 .exceptionHandling(e -> e.authenticationEntryPoint(authenticationEntryPoint))
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter,
+                        UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
