@@ -26,6 +26,6 @@ public class Event {
     private String createdBy; // student email
 
     @ManyToOne
-    @JoinColumn(name = "club_id")
+    @JoinColumn(name = "club_id", nullable = false)
     private Club club;
 }

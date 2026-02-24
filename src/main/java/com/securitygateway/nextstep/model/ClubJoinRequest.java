@@ -4,8 +4,11 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Getter @Setter @Builder
-@AllArgsConstructor @NoArgsConstructor
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ClubJoinRequest {
 
     public enum Status { PENDING, APPROVED, DECLINED }
@@ -17,7 +20,7 @@ public class ClubJoinRequest {
     private String email;
 
     @ManyToOne
-    @JoinColumn(name = "club_id")
+    @JoinColumn(name = "club_id", nullable = false)
     private Club club;
 
     @Enumerated(EnumType.STRING)
