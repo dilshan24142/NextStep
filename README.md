@@ -15,8 +15,9 @@ git clone https://github.com/dilshan24142/NextStep.git
 
 ---
 
-### 🔗 Resources & Documentation
+### 🚀 Postman API Testing
+You can access our Postman Workspace to see the tested CRUD operations:
+[NextStep CRUD Postman Workspace](https://www.postman.com/sudeesharavisara2-2942615/workspace/nextstep-crud)
 
-* **API Testing Guide (PDF):** [NextStep Postman Collection.pdf](./NextStep%20Postman%20Collection.pdf)
-
----
+### 📄 API Documentation PDF
+[Download PDF Guide](./NextStep%20Postman%20Collection.pdf)
