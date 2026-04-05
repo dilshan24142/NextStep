@@ -16,7 +16,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
-
 @Data
 @Entity
 @NoArgsConstructor
@@ -24,23 +23,28 @@ import java.util.List;
 @Builder
 @Table(name = "users")
 public class User implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
-    @SequenceGenerator(name = "user_Seq", sequenceName = "user_sequence", allocationSize = 1)
+    @SequenceGenerator(
+            name = "user_seq",
+            sequenceName = "user_sequence",
+            allocationSize = 1
+    )
     private Long id;
 
     @Embedded
     @Valid
-    private  Username name;
+    private Username name;
 
     @Column(unique = true, nullable = false)
     @Email(message = "Enter a valid email")
     @NotBlank(message = "Email can't be blank")
     private String email;
 
-    @NotBlank(message = "Password can't be blank")
     @Column(nullable = false)
-    private String Password;
+    @NotBlank(message = "Password can't be blank")
+    private String password;
 
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Choose your gender please")
@@ -52,14 +56,19 @@ public class User implements UserDetails {
     @Column(length = 1000)
     private String profilePicture;
 
-    private Boolean isVerified ;
+    private Boolean isVerified = false;
 
     @Enumerated(EnumType.STRING)
+    @NotNull
     private Role role;
+
+    /* =======================
+       Spring Security Methods
+       ======================= */
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
     @Override
@@ -84,10 +93,14 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return Boolean.TRUE.equals(this.isVerified);
     }
 
-    public String getFullName(){
+    /* =======================
+       Helper Methods
+       ======================= */
+
+    public String getFullName() {
         return name.getFirstName() + " " + name.getLastName();
     }
 }

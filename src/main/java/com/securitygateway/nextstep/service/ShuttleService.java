@@ -19,10 +19,10 @@ public class ShuttleService {
 
     @Transactional
     public Shuttle saveShuttle(Shuttle shuttle, List<MultipartFile> files) throws IOException {
-        // 1. පවතින Shuttle එකක් Update කරන්නේ නම්
+        // 1.If updating an existing Shuttle
         if (shuttle.getId() != null) {
             return shuttleRepository.findById(shuttle.getId()).map(existing -> {
-                // විස්තර update කිරීම
+                // Update details
                 existing.setBusName(shuttle.getBusName());
                 existing.setBusNumber(shuttle.getBusNumber());
                 existing.setRoute(shuttle.getRoute());
@@ -31,10 +31,10 @@ public class ShuttleService {
                 existing.setPhoneNumber(shuttle.getPhoneNumber());
                 existing.setAdditionalDetails(shuttle.getAdditionalDetails());
 
-                // අලුතින් පින්තූර එවා ඇත්නම් පමණක් පරණ ඒවා මකා අලුත් ඒවා ඇතුළත් කිරීම
+                // Only replace old images if new ones are provided
                 if (files != null && !files.isEmpty() && !files.get(0).isEmpty()) {
                     existing.getImages().clear();
-                    // පරණ පින්තූර DB එකෙන් ඉවත් කිරීම තහවුරු කිරීමට flush කිරීම
+                    // Flush to ensure old images are removed from the DB
                     shuttleRepository.saveAndFlush(existing);
 
                     for (MultipartFile file : files) {
@@ -49,12 +49,12 @@ public class ShuttleService {
                         }
                     }
                 }
-                // පින්තූර එවන්නේ නැත්නම් existing.getImages() වල පරණ ඒවා එලෙසම පවතී.
+                // If no new images are sent, existing.getImages() will remain unchanged
                 return shuttleRepository.save(existing);
-            }).orElseGet(() -> shuttleRepository.save(shuttle)); // ID එක තිබුණත් record එක නැත්නම් අලුතින් save කරයි.
+            }).orElseGet(() -> shuttleRepository.save(shuttle)); // If ID exists but record not found, save as new
         }
 
-        // 2. අලුතින්ම Shuttle එකක් සාදන්නේ නම් (Create New)
+        // 2. If creating a New Shuttle
         if (files != null && !files.isEmpty() && !files.get(0).isEmpty()) {
             List<ShuttleImage> newImages = new ArrayList<>();
             for (MultipartFile file : files) {
