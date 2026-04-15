@@ -1,8 +1,8 @@
 package com.securitygateway.nextstep.controller;
 
-import com.securitygateway.nextstep.payload.requests.*;
-import com.securitygateway.nextstep.payload.responses.*;
-import com.securitygateway.nextstep.payload.responses.Error;
+import com.securitygateway.nextstep.Dtos.requests.*;
+import com.securitygateway.nextstep.Dtos.responses.*;
+import com.securitygateway.nextstep.Dtos.responses.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -36,10 +36,10 @@ public interface AuthenticationInterface {
                 - User already exists with this phone number. Please try again with a different phone number.
             """,
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Error.class))),
+                            schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error: Failed to send OTP email. Please try again later.",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Error.class)))
+                            schema = @Schema(implementation = ErrorResponse.class)))
     })
     public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterRequest registerRequest);
 

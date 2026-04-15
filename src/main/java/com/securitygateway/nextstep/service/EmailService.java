@@ -53,23 +53,12 @@ public class EmailService {
         return -1;
     }
 
-    // the method is just to test retry mechanism
-//    public void simulateRandomFailure() throws MessagingException {
-//        int random = (int) (Math.random() * 6 + 1);
-//
-//        log.info("Random number: {}", random);
-//
-//        if (random < 5) { // 4 out of 6 chances to fail
-//            log.error("Simulating a random failure");
-//            throw new MessagingException("Failed to send email");
-//        }
-//    }
 
     public void sendOtpByEmail(String to, String otp) throws MessagingException, UnsupportedEncodingException {
         log.info("Trying to send email to {}", to);
 
         String senderName = "Security Gateway";
-        String from = "dilshans626@gmail.com";
+        String from = "suranimalaravinsha@gmail.com";
 
         MimeMessage message = javaMailSender.createMimeMessage();
         // Enable multipart mode by passing 'true' as the second argument
@@ -85,17 +74,50 @@ public class EmailService {
                 + "<strong style='font-size:18px; color:blue;'>" + otp + "</strong>.</p>"
                 + "<p>The One Time Password is valid for the next <strong>10 minutes</strong>.</p>"
                 + "<p style='color:gray; font-size:12px;'>(This is an auto generated email, so please do not reply back. Email at "
-                + "<a href='mailto:dilshans626@gmail.com'>dilshans626@gmail.com</a> if you need assistance.)</p>"
-                + "<p>Regards,<br/>Sachintha Dilshan</p>"
-                + "<img src='cid:policeOfficerImage' alt='Police Officer' style='width:100px; height:auto;'/>"
+                + "<a href='mailto:studentservices@nextstep.lk'>studentservices@nextstep.lk</a> if you need assistance.)</p>"
+                + "<p>Regards,<br/>Next Step</p>"
+                + "<img src='cid:logoImage' alt='NextStep Logo' style='width:120px; height:auto;'/>\n"
                 + "</body>"
                 + "</html>";
         helper.setText(htmlContent, true);
 
-        ClassPathResource image = new ClassPathResource("static/security-removebg-preview.png");
-        helper.addInline("policeOfficerImage", image);
+        ClassPathResource image = new ClassPathResource("static/logo1.png");
+        helper.addInline("logoImage", image);
+
 
         javaMailSender.send(message);
         log.info("Email has been sent successfully to {}", to);
+    }
+    public void sendCustomEmail(String to, String subject, String messageBody) throws MessagingException, UnsupportedEncodingException {
+        log.info("Sending custom email to {}", to);
+
+        String senderName = "Security Gateway";
+        String from = "suranimalaravinsha@gmail.com";
+
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+        helper.setFrom(from, senderName);
+        helper.setTo(to);
+        helper.setSubject(subject);
+
+        String htmlContent = "<html>"
+                + "<body>"
+                + "<p>Dear User,</p>"
+                + "<p>" + messageBody + "</p>"
+                + "<p style='color:gray; font-size:12px;'>(This is an auto-generated email, please do not reply. Email at "
+                + "<a href='mailto:studentservices@nextstep.lk'>studentservices@nextstep.lk</a> if you need assistance.)</p>"
+                + "<p>Regards,<br/>Next Step</p>"
+                + "<img src='cid:logoImage' alt='NextStep Logo' style='width:120px; height:auto;'/>"
+                + "</body>"
+                + "</html>";
+
+        helper.setText(htmlContent, true);
+
+        ClassPathResource image = new ClassPathResource("static/logo1.png");
+        helper.addInline("logoImage", image);
+
+        javaMailSender.send(message);
+        log.info("Custom email sent successfully to {}", to);
     }
 }
