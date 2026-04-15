@@ -9,10 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.concurrent.TimeUnit;
 
 
-// instead of creating this class you can configure the same in application.properties file by adding the following properties
-// spring.cache.cache-names=users
-// spring.cache.caffeine.spec=initialCapacity=10,maximumSize=500,expireAfterAccess=5m
-
+//colmceperjztwwlw
 @Configuration
 @EnableCaching
 public class CaffeineCacheConfig {
