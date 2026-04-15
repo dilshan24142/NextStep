@@ -29,7 +29,7 @@ public class FileNotificationService {
             log.info("Sending file upload notification to {}", to);
 
             String senderName = "Security Gateway - File System";
-            String from = "kavishkadewduni@gmail.com";
+            String from = "suranimalaravinsha@gmail.com";
 
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);

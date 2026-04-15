@@ -53,23 +53,12 @@ public class EmailService {
         return -1;
     }
 
-    // the method is just to test retry mechanism
-//    public void simulateRandomFailure() throws MessagingException {
-//        int random = (int) (Math.random() * 6 + 1);
-//
-//        log.info("Random number: {}", random);
-//
-//        if (random < 5) { // 4 out of 6 chances to fail
-//            log.error("Simulating a random failure");
-//            throw new MessagingException("Failed to send email");
-//        }
-//    }
 
     public void sendOtpByEmail(String to, String otp) throws MessagingException, UnsupportedEncodingException {
         log.info("Trying to send email to {}", to);
 
         String senderName = "Security Gateway";
-        String from = "studentservices@nextstep.lk";
+        String from = "suranimalaravinsha@gmail.com";
 
         MimeMessage message = javaMailSender.createMimeMessage();
         // Enable multipart mode by passing 'true' as the second argument
@@ -103,7 +92,7 @@ public class EmailService {
         log.info("Sending custom email to {}", to);
 
         String senderName = "Security Gateway";
-        String from = "studentservices@nextstep.lk";
+        String from = "suranimalaravinsha@gmail.com";
 
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
