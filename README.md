@@ -9,7 +9,7 @@
 
 ## 📚 About The Project
 
-NextStep aims to streamline student activities by providing a robust API for managing academic content, user interactions, and collaborative features. The project is built with scalability and ease of use in mind, offering a solid foundation for a full-fledged student portal.
+NextStep aims to streamline student activities by providing a robust API for managing academic content, user interactions, and collaborative features. The project is built with scalability and ease of use in mind, offering a solid foundation for a full-fledged student portal
 
 ### Key Features (Planned & Implemented)
 *   **User Management**: Secure registration, authentication, and profile management.
